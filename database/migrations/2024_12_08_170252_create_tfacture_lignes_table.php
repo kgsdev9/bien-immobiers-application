@@ -15,7 +15,6 @@ class CreateTfactureLignesTable extends Migration
     {
         Schema::create('tfacture_lignes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('tproduct_id')->nullable()->constrained('t_products')->onDelete('cascade');
             $table->string('designation')->nullable();
             $table->string('codecommade')->nullable();
             $table->string('codefacture')->nullable();

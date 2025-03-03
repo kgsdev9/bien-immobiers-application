@@ -43,21 +43,12 @@ class TFacture extends Model
     ];
 
 
-
-    public function client()
-    {
-        return $this->belongsTo(TClient::class, 'client_id');
-    }
-
     public function items()
     {
         return $this->hasMany(TfactureLigne::class, 'numvente', 'numvente');
     }
 
-    public function codedevise()
-    {
-        return $this->belongsTo(TcodeDevise::class, 'codedevise_id');
-    }
+
     public function modereglement()
     {
         return $this->belongsTo(ModeReglemnt::class, 'mode_reglement_id');

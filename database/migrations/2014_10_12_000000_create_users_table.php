@@ -17,6 +17,7 @@ class CreateUsersTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('telephone')->nullable();
+            $table->string('siteweb')->nullable();
             $table->string('fax')->nullable();
             $table->string('logo')->nullable();
             $table->foreignId('role_id')->nullable()->constrained('roles')->onDelete('cascade');

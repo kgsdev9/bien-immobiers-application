@@ -39,7 +39,7 @@
             </div>
             <!--end::Toolbar-->
             <!--begin::Content-->
-            <div id="kt_app_content" class="app-content flex-column-fluid">
+            {{-- <div id="kt_app_content" class="app-content flex-column-fluid">
                 <!--begin::Content container-->
                 <div id="kt_app_content_container" class="app-container container-fluid">
                     <!--begin::Row-->
@@ -418,7 +418,7 @@
                                                             <span
                                                                 class="text-gray-600 fw-bold fs-6">{{ $facture->modereglement->libellemodereglement ?? '' }}</span>
                                                         </td>
-                                                      
+
                                                         <td class="text-end pe-12">
                                                             <span class="badge py-3 px-4 fs-7 badge-light-primary">
                                                                 {{ $facture->montantttc }}</span>
@@ -451,7 +451,7 @@
                     <!--end::Row-->
                 </div>
                 <!--end::Content container-->
-            </div>
+            </div> --}}
             <!--end::Content-->
         </div>
         <!--end::Content wrapper-->
@@ -466,10 +466,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Récupérer les données du backend
-            const labels = @json($labels); // Mois
-            const data = @json($data); // Totaux
-
+          
             // Configuration du graphique
             const ctx = document.getElementById('ventesChart').getContext('2d');
             new Chart(ctx, {

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateServeursTable extends Migration
+class CreateJutificatifsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,9 @@ class CreateServeursTable extends Migration
      */
     public function up()
     {
-        Schema::create('serveurs', function (Blueprint $table) {
+        Schema::create('jutificatifs', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('locataire_id')->constrained('locataires')->onDelete('cascade');
             $table->string('name');
             $table->timestamps();
         });
@@ -27,6 +28,6 @@ class CreateServeursTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('serveurs');
+        Schema::dropIfExists('jutificatifs');
     }
 }

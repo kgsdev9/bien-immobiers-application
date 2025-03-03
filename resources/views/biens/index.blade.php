@@ -1,13 +1,13 @@
 @extends('layouts.app')
-@section('title', 'Liste des clients')
+@section('title', 'Liste des biens')
 @section('content')
-    <div class="app-main flex-column flex-row-fluid mt-4" x-data="userSearch()" x-init="init()">
+    <div class="app-main flex-column flex-row-fluid mt-4" x-data="bienSearch()" x-init="init()">
         <div class="d-flex flex-column flex-column-fluid">
             <div class="app-toolbar py-3 py-lg-6">
                 <div class="app-container container-xxl d-flex flex-stack">
                     <div class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
                         <h1 class="page-heading d-flex text-gray-900 fw-bold fs-3 flex-column justify-content-center my-0">
-                            GESTION DES LOCATAIRES
+                            GESTION DES BIENS
                         </h1>
                         <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1">
                             <li class="breadcrumb-item text-muted">
@@ -16,7 +16,7 @@
                             <li class="breadcrumb-item">
                                 <span class="bullet bg-gray-500 w-5px h-2px"></span>
                             </li>
-                            <li class="breadcrumb-item text-muted">Locataires</li>
+                            <li class="breadcrumb-item text-muted">GESTION DES BIENS</li>
                         </ul>
                     </div>
                 </div>
@@ -63,34 +63,33 @@
                                     <table class="table align-middle table-row-dashed fs-6 gy-5">
                                         <thead>
                                             <tr class="text-start text-muted fw-bold fs-7 text-uppercase gs-0">
-                                                <th class="min-w-125px">Code Locataire</th>
                                                 <th class="min-w-125px">Nom</th>
-                                                <th class="min-w-125px">Prénom</th>
-                                                <th class="min-w-125px">Téléphone</th>
-                                                <th class="min-w-125px">Email</th>
                                                 <th class="min-w-125px">Adresse</th>
-                                                <th class="min-w-125px">Profession</th>
-                                                <th class="min-w-125px">Pièce d'Identité</th>
+                                                <th class="min-w-125px">Superficie</th>
+                                                <th class="min-w-125px">Nombre de pièces</th>
+                                                <th class="min-w-125px">Type de bien</th>
+                                                <th class="min-w-125px">Commune</th>
+                                                <th class="min-w-125px">Statut</th>
                                                 <th class="text-end min-w-100px">Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody class="text-gray-600 fw-semibold">
-                                            <template x-for="client in paginatedUsers" :key="client.id">
+                                            <template x-for="bien in paginatedBiens" :key="bien.id">
                                                 <tr>
-                                                    <td x-text="client.code_locataire"></td>
-                                                    <td x-text="client.nom"></td>
-                                                    <td x-text="client.prenom"></td>
-                                                    <td x-text="client.telephone"></td>
-                                                    <td x-text="client.email"></td>
-                                                    <td x-text="client.adresse"></td>
-                                                    <td x-text="client.profession"></td>
-                                                    <td x-text="client.piece_identite"></td>
+                                                    <td x-text="bien.nom"></td>
+                                                    <td x-text="bien.adresse"></td>
+                                                    <td x-text="bien.superficie"></td>
+                                                    <td x-text="bien.nombre_pieces"></td>
+                                                    <td x-text="bien.type_bien.nom"></td>
+                                                    <td x-text="bien.commune.nom"></td>
+                                                    <td x-text="bien.statut"></td>
+
                                                     <td class="text-end">
-                                                        <button @click="openModal(client)"
+                                                        <button @click="openModal(bien)"
                                                             class="btn btn-primary btn-sm mx-2">
                                                             <i class="fa fa-edit"></i>
                                                         </button>
-                                                        <button @click="deleteClient(client.id)"
+                                                        <button @click="deleteBien(bien.id)"
                                                             class="btn btn-danger btn-sm mx-2">
                                                             <i class="fa fa-trash"></i>
                                                         </button>
@@ -101,6 +100,7 @@
                                     </table>
                                 </template>
                             </div>
+
 
                             <div class="row mt-4">
                                 <div class="col-sm-12 col-md-7 offset-md-5 d-flex justify-content-end">
@@ -129,19 +129,12 @@
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" x-text="isEdite ? 'Modification' : 'Création'"></h5>
+                            <h5 class="modal-title" x-text="isEdite ? 'Modification du Bien' : 'Création d\'un Bien'"></h5>
                             <button type="button" class="btn-close" @click="hideModal()"></button>
                         </div>
                         <div class="modal-body">
                             <form @submit.prevent="submitForm">
                                 <div class="row">
-                                    <!-- Code Locataire -->
-                                    <div class="col-md-6 mb-3">
-                                        <label for="code_locataire" class="form-label">Code Locataire</label>
-                                        <input type="text" id="code_locataire" class="form-control"
-                                            x-model="formData.code_locataire" required>
-                                    </div>
-
                                     <!-- Nom -->
                                     <div class="col-md-6 mb-3">
                                         <label for="nom" class="form-label">Nom</label>
@@ -149,50 +142,63 @@
                                             required>
                                     </div>
 
-                                    <!-- Prénom -->
-                                    <div class="col-md-6 mb-3">
-                                        <label for="prenom" class="form-label">Prénom</label>
-                                        <input type="text" id="prenom" class="form-control"
-                                            x-model="formData.prenom" required>
-                                    </div>
-
-                                    <!-- Téléphone -->
-                                    <div class="col-md-6 mb-3">
-                                        <label for="telephone" class="form-label">Téléphone</label>
-                                        <input type="text" id="telephone" class="form-control"
-                                            x-model="formData.telephone">
-                                    </div>
-
-                                    <!-- Email -->
-                                    <div class="col-md-6 mb-3">
-                                        <label for="email" class="form-label">Email</label>
-                                        <input type="email" id="email" class="form-control"
-                                            x-model="formData.email" required>
-                                    </div>
-
                                     <!-- Adresse -->
                                     <div class="col-md-6 mb-3">
                                         <label for="adresse" class="form-label">Adresse</label>
                                         <input type="text" id="adresse" class="form-control"
-                                            x-model="formData.adresse">
+                                            x-model="formData.adresse" required>
                                     </div>
 
-                                    <!-- Profession -->
+                                    <!-- Superficie -->
                                     <div class="col-md-6 mb-3">
-                                        <label for="profession" class="form-label">Profession</label>
-                                        <input type="text" id="profession" class="form-control"
-                                            x-model="formData.profession">
+                                        <label for="superficie" class="form-label">Superficie (m²)</label>
+                                        <input type="number" id="superficie" class="form-control"
+                                            x-model="formData.superficie" required>
                                     </div>
 
-                                    <!-- Pièce d'identité -->
+                                    <!-- Nombre de pièces -->
                                     <div class="col-md-6 mb-3">
-                                        <label for="piece_identite" class="form-label">Pièce d'Identité</label>
-                                        <input type="text" id="piece_identite" class="form-control"
-                                            x-model="formData.piece_identite">
+                                        <label for="nombre_pieces" class="form-label">Nombre de pièces</label>
+                                        <input type="number" id="nombre_pieces" class="form-control"
+                                            x-model="formData.nombre_pieces" required>
+                                    </div>
+
+                                    <!-- Type de bien -->
+                                    <div class="col-md-6 mb-3">
+                                        <label for="type_bien_id" class="form-label">Type de Bien</label>
+                                        <select id="type_bien_id" class="form-select" x-model="formData.type_bien_id"
+                                            required>
+                                            <option value="">Sélectionner un type</option>
+                                            <template x-for="type in listetypesbiens" :key="type.id">
+                                                <option :value="type.id" x-text="type.nom"></option>
+                                            </template>
+                                        </select>
+                                    </div>
+
+                                    <!-- Commune -->
+                                    <div class="col-md-6 mb-3">
+                                        <label for="commune_id" class="form-label">Commune</label>
+                                        <select id="commune_id" class="form-select" x-model="formData.commune_id"
+                                            required>
+                                            <option value="">Sélectionner une commune</option>
+                                            <template x-for="commune in communes" :key="commune.id">
+                                                <option :value="commune.id" x-text="commune.nom"></option>
+                                            </template>
+                                        </select>
+                                    </div>
+
+                                    <!-- Statut -->
+                                    <div class="col-md-6 mb-3">
+                                        <label for="statut" class="form-label">Statut</label>
+                                        <select id="statut" class="form-select" x-model="formData.statut" required>
+                                            <option value="">Sélectionner un statut</option>
+                                            <option value="Disponible" x-text="'Disponible'"></option>
+                                            <option value="Indisponible" x-text="'Indisponible'"></option>
+                                        </select>
                                     </div>
 
                                     <div class="col-md-6 mb-3 mt-8">
-                                        <label for="tcodedevise_id" class="form-label"></label>
+                                        <label for="submit" class="form-label"></label>
                                         <button type="submit" class="btn btn-primary"
                                             x-text="isEdite ? 'Mettre à jour' : 'Enregistrer'"></button>
                                     </div>
@@ -203,59 +209,61 @@
                 </div>
             </div>
         </template>
+
     </div>
 
 
     <script>
-        function userSearch() {
+        function bienSearch() {
             return {
                 searchTerm: '',
-                listelocataires: @json($listelocataires), // Données venant de Laravel
-                filteredUsers: [],
+                listBiens: @json($listebiens), // Données venant de Laravel
+                communes: @json($listecommunes), // Données venant de Laravel
+                listetypesbiens: @json($listetypesbiens), // Données venant de Laravel
+                filteredBiens: [],
+
                 currentPage: 1,
-                usersPerPage: 10,
+                biensPerPage: 10,
                 totalPages: 0,
                 isLoading: false,
                 showModal: false,
                 isEdite: false,
                 formData: {
-                    code_locataire: '',
                     nom: '',
-                    prenom: '',
-                    telephone: '',
-                    email: '',
                     adresse: '',
-                    profession: '',
-                    piece_identite: ''
+                    superficie: '',
+                    nombre_pieces: '',
+                    type_bien_id: '',
+                    commune_id: '',
+                    statut: ''
                 },
-                currentClient: null,
+                currentBien: null,
 
                 // Méthode pour cacher le modal et réinitialiser les données
                 hideModal() {
                     this.showModal = false;
-                    this.currentClient = null;
+                    this.currentBien = null;
                     this.resetForm();
                     this.isEdite = false;
                 },
 
                 // Méthode pour ouvrir le modal en mode création ou édition
-                openModal(client = null) {
-                    this.isEdite = client !== null;
+                openModal(bien = null) {
+                    this.isEdite = bien !== null;
 
                     if (this.isEdite) {
-                        this.currentClient = {
-                            ...client
+                        this.currentBien = {
+                            ...bien
                         };
 
                         this.formData = {
-                            code_locataire: this.currentClient.code_locataire,
-                            nom: this.currentClient.nom,
-                            prenom: this.currentClient.prenom,
-                            telephone: this.currentClient.telephone,
-                            email: this.currentClient.email,
-                            adresse: this.currentClient.adresse,
-                            profession: this.currentClient.profession,
-                            piece_identite: this.currentClient.piece_identite
+                            nom: this.currentBien.nom,
+                            adresse: this.currentBien.adresse,
+                            superficie: this.currentBien.superficie,
+                            nombre_pieces: this.currentBien.nombre_pieces,
+                            type_bien_id: this.currentBien.type_bien_id,
+                            commune_id: this.currentBien.commune_id,
+                            statut: this.currentBien.statut
                         };
                     } else {
                         this.resetForm();
@@ -267,29 +275,28 @@
                 // Méthode pour réinitialiser le formulaire
                 resetForm() {
                     this.formData = {
-                        code_locataire: '',
                         nom: '',
-                        prenom: '',
-                        telephone: '',
-                        email: '',
                         adresse: '',
-                        profession: '',
-                        piece_identite: ''
+                        superficie: '',
+                        nombre_pieces: '',
+                        type_bien_id: '',
+                        commune_id: '',
+                        statut: ''
                     };
                 },
 
-                // Méthode pour filtrer les locataires en fonction du terme de recherche
-                filterUsers() {
+                // Méthode pour filtrer les biens en fonction du terme de recherche
+                filterBiens() {
                     const term = this.searchTerm.toLowerCase();
-                    this.filteredUsers = this.listelocataires.filter(user => {
+                    this.filteredBiens = this.listBiens.filter(bien => {
                         return (
-                            user.nom && user.nom.toLowerCase().includes(term) ||
-                            user.prenom && user.prenom.toLowerCase().includes(term) ||
-                            user.telephone && user.telephone.toLowerCase().includes(term) ||
-                            user.email && user.email.toLowerCase().includes(term)
+                            bien.nom && bien.nom.toLowerCase().includes(term) ||
+                            bien.adresse && bien.adresse.toLowerCase().includes(term) ||
+                            bien.superficie && bien.superficie.toString().toLowerCase().includes(term) ||
+                            bien.nombre_pieces && bien.nombre_pieces.toString().toLowerCase().includes(term)
                         );
                     });
-                    this.totalPages = Math.ceil(this.filteredUsers.length / this.usersPerPage);
+                    this.totalPages = Math.ceil(this.filteredBiens.length / this.biensPerPage);
                     this.currentPage = 1;
                 },
 
@@ -299,20 +306,20 @@
                     this.currentPage = page;
                 },
 
-                // Calculer les locataires affichés pour la page actuelle
-                get paginatedUsers() {
-                    let start = (this.currentPage - 1) * this.usersPerPage;
-                    let end = start + this.usersPerPage;
-                    return this.filteredUsers.slice(start, end);
+                // Calculer les biens affichés pour la page actuelle
+                get paginatedBiens() {
+                    let start = (this.currentPage - 1) * this.biensPerPage;
+                    let end = start + this.biensPerPage;
+                    return this.filteredBiens.slice(start, end);
                 },
 
-                // Soumettre le formulaire pour créer/éditer un locataire
+                // Soumettre le formulaire pour créer/éditer un bien
                 async submitForm() {
                     this.isLoading = true;
 
                     // Validation des champs requis
-                    if (!this.formData.nom || !this.formData.prenom || !this.formData.telephone || !this.formData
-                        .email) {
+                    if (!this.formData.nom || !this.formData.adresse || !this.formData.superficie || !this.formData
+                        .nombre_pieces) {
                         Swal.fire({
                             icon: 'error',
                             title: 'Tous les champs obligatoires doivent être remplis.',
@@ -323,22 +330,21 @@
                     }
 
                     const formData = new FormData();
-                    formData.append('code_locataire', this.formData.code_locataire);
                     formData.append('nom', this.formData.nom);
-                    formData.append('prenom', this.formData.prenom);
-                    formData.append('telephone', this.formData.telephone);
-                    formData.append('email', this.formData.email);
                     formData.append('adresse', this.formData.adresse);
-                    formData.append('profession', this.formData.profession);
-                    formData.append('piece_identite', this.formData.piece_identite);
+                    formData.append('superficie', this.formData.superficie);
+                    formData.append('nombre_pieces', this.formData.nombre_pieces);
+                    formData.append('type_bien_id', this.formData.type_bien_id);
+                    formData.append('commune_id', this.formData.commune_id);
+                    formData.append('statut', this.formData.statut);
 
-                    // Si c'est une modification, ajoutez l'ID du client
-                    if (this.currentClient) {
-                        formData.append('locataire_id', this.currentClient.id);
+                    // Si c'est une modification, ajoutez l'ID du bien
+                    if (this.currentBien) {
+                        formData.append('bien_id', this.currentBien.id);
                     }
 
                     try {
-                        const response = await fetch('{{ route('clients.store') }}', {
+                        const response = await fetch('{{ route('biens.store') }}', {
                             method: 'POST',
                             headers: {
                                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
@@ -348,31 +354,27 @@
 
                         if (response.ok) {
                             const data = await response.json();
-                            const client = data.locataire;
+                            const bien = data.bien;
 
-
-                            if (client) {
-
+                            if (bien) {
                                 Swal.fire({
                                     icon: 'success',
-                                    title: 'Client enregistré avec succès!',
+                                    title: 'Bien enregistré avec succès!',
                                     showConfirmButton: false,
                                     timer: 1500
                                 });
 
-                                // Mettre à jour la liste des locataires en fonction de l'action
+                                // Mettre à jour la liste des biens en fonction de l'action
                                 if (this.isEdite) {
-                                    const index = this.listelocataires.findIndex(u => u.id === client.id);
-                                    if (index !== -1) this.listelocataires[index] = client;
+                                    const index = this.listBiens.findIndex(b => b.id === bien.id);
+                                    if (index !== -1) this.listBiens[index] = bien;
                                 } else {
-                                    this.listelocataires.push(client);
+                                    this.listBiens.push(bien);
                                 }
 
-
                                 // Trier par date de création décroissante
-                                this.listelocataires.sort((a, b) => new Date(b.created_at) - new Date(a
-                                    .created_at));
-                                this.filterUsers(); // Refiltrer les utilisateurs après ajout/édition
+                                this.listBiens.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+                                this.filterBiens(); // Refiltrer les biens après ajout/édition
                                 this.resetForm(); // Réinitialiser le formulaire
                                 this.hideModal(); // Cacher le modal
                             }
@@ -395,11 +397,10 @@
                     }
                 },
 
-                // Méthode pour supprimer un locataire
-                async deleteClient(clientId) {
+                // Méthode pour supprimer un bien
+                async deleteBien(bienId) {
                     try {
-                        const url = `{{ route('clients.destroy', ['client' => '__ID__']) }}`.replace("__ID__",
-                            clientId);
+                        const url = `{{ route('biens.destroy', ['bien' => '__ID__']) }}`.replace("__ID__", bienId);
 
                         const response = await fetch(url, {
                             method: "DELETE",
@@ -418,8 +419,8 @@
                                     timer: 1500,
                                 });
 
-                                this.listelocataires = this.listelocataires.filter(client => client.id !== clientId);
-                                this.filterUsers(); // Refiltrer les utilisateurs après suppression
+                                this.listBiens = this.listBiens.filter(bien => bien.id !== bienId);
+                                this.filterBiens(); // Refiltrer les biens après suppression
                             } else {
                                 Swal.fire({
                                     icon: "error",
@@ -445,11 +446,12 @@
                 },
 
                 init() {
-                    this.filterUsers();
+                    this.filterBiens();
                     this.isLoading = false;
                 }
             };
         }
     </script>
+
 
 @endsection
