@@ -5,6 +5,7 @@ use App\Http\Controllers\Categorie\CategoryController;
 use App\Http\Controllers\Client\ClientController;
 use App\Http\Controllers\Commandes\CommandeController;
 use App\Http\Controllers\Commune\CommuneController;
+use App\Http\Controllers\Contrat\ContratController;
 use App\Http\Controllers\Depenses\DepensesController;
 use App\Http\Controllers\Factures\FactureController;
 use App\Http\Controllers\Factures\FacturePersonnaliseController;
@@ -50,6 +51,7 @@ Route::get('/generateRapport', [ImpressionFactureController::class, 'generateRap
 Route::resource('/biens', BienImmobilierController::class);
 Route::resource('/communes', CommuneController::class);
 Route::resource('/typebiens', TypeBienController::class);
+Route::resource('/contrat', ContratController::class);
 
 Route::get('/rapport', [RapportController::class, 'generateRapportForm'])->name('vente.rapport');
 Route::post('/rapport/vente', [RapportController::class, 'generateRapport'])->name('rapport.vente');

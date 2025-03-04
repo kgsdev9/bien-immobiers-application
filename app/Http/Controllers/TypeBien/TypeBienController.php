@@ -18,69 +18,55 @@ class TypeBienController extends Controller
         $listeypebiens = TypeBien::all();
         return view('typebiens.index', compact('listeypebiens'));
     }
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+
     public function store(Request $request)
     {
-        //
+        // Vérifier si id existe dans la requête
+        $typeBienId = $request->input('typebien_id');
+
+        if ($typeBienId) {
+            // Si typebien_id existe, on modifie le TypeBien
+            $typeBien = TypeBien::find($typeBienId);
+
+            // Si le TypeBien n'existe pas, le créer
+            if (!$typeBien) {
+                // Créer un nouveau TypeBien
+                return $this->createTypeBien($request);
+            }
+
+            // Si le TypeBien existe, procéder à la mise à jour
+            return $this->updateTypeBien($typeBien, $request);
+        } else {
+            // Si typebien_id est absent, on crée un nouveau TypeBien
+            return $this->createTypeBien($request);
+        }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    private function updateTypeBien(TypeBien $typeBien, Request $request)
     {
-        //
+        $typeBien->update([
+            'nom' => $request->name,
+        ]);
+        return response()->json(['message' => 'Type de bien mis à jour avec succès', 'typebien' => $typeBien], 200);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
+    private function createTypeBien(Request $request)
     {
-        //
+        // Création d'un nouveau TypeBien
+        $typeBien = TypeBien::create([
+            'nom' => $request->name,
+        ]);
+
+        return response()->json(['message' => 'Type de bien créé avec succès', 'typebien' => $typeBien], 201);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
-        //
+        $typeBien = TypeBien::findOrFail($id);
+        $typeBien->delete();
+
+        return response()->json(['message' => 'Type de bien supprimé avec succès']);
     }
+
 }

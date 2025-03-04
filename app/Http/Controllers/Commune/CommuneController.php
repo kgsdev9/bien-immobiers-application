@@ -3,83 +3,66 @@
 namespace App\Http\Controllers\Commune;
 
 use App\Http\Controllers\Controller;
+use App\Models\Commune;
 use Illuminate\Http\Request;
 
 class CommuneController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
-        //
+        // Récupère toutes les communes
+        $communes = Commune::all();
+        return view('communes.index', compact('communes'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
-        //
+        $communeId = $request->input('commune_id');
+
+        // Vérifier si l'ID de la commune existe dans la requête
+        if ($communeId)
+        {
+            // Si l'ID existe, on met à jour la commune
+            $commune = Commune::find($communeId);
+
+            if (!$commune)
+            {
+                // Si la commune n'existe pas, on crée une nouvelle commune
+                return $this->createCommune($request);
+            }
+
+            // Sinon, mettre à jour la commune
+            return $this->updateCommune($commune, $request);
+        } else
+        {
+            // Si l'ID n'est pas fourni, créer une nouvelle commune
+            return $this->createCommune($request);
+        }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    private function updateCommune($commune, Request $request)
     {
-        //
+        $commune->update([
+            'nom' => $request->name,
+        ]);
+
+        return response()->json(['message' => 'Commune mise à jour avec succès', 'commune' => $commune], 200);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
+    private function createCommune(Request $request)
     {
-        //
+        // Création d'une nouvelle commune
+        $commune = Commune::create([
+            'nom' => $request->name,
+        ]);
+
+        return response()->json(['message' => 'Commune créée avec succès', 'commune' => $commune], 201);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
+    public function destroy(Commune $commune)
     {
-        //
-    }
+        $commune->delete();
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        return response()->json(['message' => 'Commune supprimée avec succès'], 200);
     }
 }
