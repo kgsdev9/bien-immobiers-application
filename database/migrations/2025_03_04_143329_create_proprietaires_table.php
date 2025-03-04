@@ -15,12 +15,12 @@ class CreateProprietairesTable extends Migration
     {
         Schema::create('proprietaires', function (Blueprint $table) {
             $table->id();
-            $table->srting('nom');
-            $table->srting('prenom');
-            $table->srting('email');
-            $table->srting('telephone');
-            $table->srting('photo');
-            $table->srting('piece');
+            $table->string('nom');
+            $table->string('prenom');
+            $table->string('email');
+            $table->string('telephone');
+            $table->string('photo');
+            $table->string('piece');
             $table->timestamps();
         });
     }

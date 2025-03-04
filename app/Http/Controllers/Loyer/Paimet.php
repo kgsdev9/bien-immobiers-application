@@ -1,27 +1,20 @@
 <?php
 
-namespace App\Http\Controllers\Loyer;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Models\Contrat;
 use App\Models\Paiement;
 use App\Models\Quittance;
 use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
-class PaiemntLoyerController extends Controller
+class PaiementController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Store a newly created resource in storage.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        $listepayment = Paiement::all();
-        $contrats = Contrat::with(['locataire', 'bien.commune'])->get();
-        return view('paiements.loyers.index', compact('listepayment', 'contrats'));
-    }
-
     public function store(Request $request)
     {
         // Vérifier si le paiement existe déjà avec la référence
