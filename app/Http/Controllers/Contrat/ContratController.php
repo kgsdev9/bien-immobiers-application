@@ -7,6 +7,7 @@ use App\Models\Bien;
 use App\Models\Contrat;
 use App\Models\Locataire;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class ContratController extends Controller
 {
@@ -25,27 +26,48 @@ class ContratController extends Controller
     }
 
 
+
+
+
+    public function generateCodeContrat()
+    {
+        // Générer un code unique basé sur une chaîne aléatoire et un timestamp
+        $newCodeContrat = 'CONTRAT-' . strtoupper(Str::random(5)) . '-' . time();
+
+        // Vérifier si un contrat existe déjà avec ce codecontrat
+        $existingContract = Contrat::where('codecontrat', $newCodeContrat)->first();
+
+        // Si un contrat existe déjà avec ce code, recommencer le processus jusqu'à ce que le code soit unique
+        while ($existingContract) {
+            // Générer un autre code unique si celui-ci existe déjà
+            $newCodeContrat = 'CONTRAT-' . strtoupper(Str::random(5)) . '-' . time();
+            $existingContract = Contrat::where('codecontrat', $newCodeContrat)->first();
+        }
+
+        // Retourner le code généré
+        return $newCodeContrat;
+    }
+
+
+
+
     public function store(Request $request)
     {
         $contratId = $request->input('contrat_id');
 
         // Vérifier si l'ID du contrat existe dans la requête
-        if ($contratId)
-        {
+        if ($contratId) {
             // Si l'ID existe, on met à jour le contrat
             $contrat = Contrat::find($contratId);
 
-            if (!$contrat)
-            {
+            if (!$contrat) {
                 // Si le contrat n'existe pas, on crée un nouveau contrat
                 return $this->createContrat($request);
             }
 
             // Sinon, mettre à jour le contrat
             return $this->updateContrat($contrat, $request);
-        }
-        else
-        {
+        } else {
             // Si l'ID n'est pas fourni, créer un nouveau contrat
             return $this->createContrat($request);
         }
@@ -63,10 +85,10 @@ class ContratController extends Controller
             'date_fin' => $request->date_fin,
             'montant_loyer' => $request->montant_loyer,
             'caution' => $request->caution,
-            // 'etat' => $request->etat,
             'document' => $request->document ?? 'rien',
         ]);
 
+        $contrat->load('locataire', 'bien');
         return response()->json(['message' => 'Contrat mis à jour avec succès', 'contrat' => $contrat], 200);
     }
 
@@ -78,15 +100,16 @@ class ContratController extends Controller
         // Création d'un nouveau contrat
         $contrat = Contrat::create([
             'locataire_id' => $request->locataire_id,
+            'codecontrat' => $this->generateCodeContrat(),
             'bien_id' => $request->bien_id,
             'date_debut' => $request->date_debut,
             'date_fin' => $request->date_fin,
             'montant_loyer' => $request->montant_loyer,
             'caution' => $request->caution,
-            // 'etat' => $request->etat,
             'document' => $request->document ?? 'rien',
         ]);
-
+        
+        $contrat->load('locataire', 'bien');
         return response()->json(['message' => 'Contrat créé avec succès', 'contrat' => $contrat], 201);
     }
 
@@ -99,5 +122,4 @@ class ContratController extends Controller
 
         return response()->json(['message' => 'Contrat supprimé avec succès'], 200);
     }
-
 }

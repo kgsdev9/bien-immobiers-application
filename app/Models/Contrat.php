@@ -11,7 +11,7 @@ class Contrat extends Model
 
     protected $fillable = [
         'locataire_id', 'bien_id', 'date_debut', 'date_fin',
-        'montant_loyer', 'caution', 'parametrestatus_id', 'document'
+        'montant_loyer', 'caution', 'parametrestatus_id', 'document', 'codecontrat'
     ];
 
     public function locataire()

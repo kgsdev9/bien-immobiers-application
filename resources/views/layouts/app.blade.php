@@ -121,7 +121,7 @@
                                     class="menu-item menu-lg-down-accordion me-0 me-lg-2">
                                     <!--begin:Menu link-->
                                     <span class="menu-link">
-                                        <span class="menu-title">Rapport</span>
+                                        <span class="menu-title">QuittanceC</span>
                                         <span class=" d-lg-none"></span>
                                     </span>
 

@@ -23,7 +23,8 @@
 
                                     <i class='fas fa-search position-absolute ms-5'></i>
 
-                                    <input type="text" class="form-control form-control-solid w-250px ps-13 form-control-sm"
+                                    <input type="text"
+                                        class="form-control form-control-solid w-250px ps-13 form-control-sm"
                                         placeholder="Rechercher" x-model="searchTerm" @input="filterContrats">
                                 </div>
                             </div>
@@ -64,11 +65,13 @@
                                                     <td x-text="contrat.date_debut"></td>
                                                     <td x-text="contrat.date_fin"></td>
                                                     <td class="text-end">
-                                                        <button @click="openModal(contrat)" class="btn btn-primary btn-sm mx-2">
+                                                        <button @click="openModal(contrat)"
+                                                            class="btn btn-primary btn-sm mx-2">
                                                             <i class="fa fa-edit"></i>
                                                         </button>
 
-                                                        <button @click="deleteContrat(contrat.id)" class="btn btn-danger btn-sm">
+                                                        <button @click="deleteContrat(contrat.id)"
+                                                            class="btn btn-danger btn-sm">
                                                             <i class="fa fa-trash"></i>
                                                         </button>
                                                     </td>
@@ -99,37 +102,46 @@
                                     <label for="locataire_id" class="form-label">Locataire</label>
                                     <select id="locataire_id" class="form-control" x-model="formData.locataire_id" required>
                                         <option value="">Choisir un locataire</option>
-                                        <template x-for="locataire in locataires" :key="locataire.id">
-                                            <option :value="locataire.id" x-text="locataire.nom"></option>
-                                        </template>
+                                        @foreach ($locataires as $locataire)
+                                            <option value="{{ $locataire->id }}">
+                                                {{ $locataire->nom }}
+                                            </option>
+                                        @endforeach
                                     </select>
                                 </div>
                                 <div class="mb-3">
                                     <label for="bien_id" class="form-label">Bien</label>
                                     <select id="bien_id" class="form-control" x-model="formData.bien_id" required>
                                         <option value="">Choisir un bien</option>
-                                        <template x-for="bien in biens" :key="bien.id">
-                                            <option :value="bien.id" x-text="bien.nom"></option>
-                                        </template>
+                                        @foreach ($biens as $bien)
+                                            <option value="{{ $bien->id }}">
+                                                {{ $bien->nom }}
+                                            </option>
+                                        @endforeach
                                     </select>
                                 </div>
                                 <div class="mb-3">
                                     <label for="date_debut" class="form-label">Date Début</label>
-                                    <input type="date" id="date_debut" class="form-control" x-model="formData.date_debut" required>
+                                    <input type="date" id="date_debut" class="form-control" x-model="formData.date_debut"
+                                        required>
                                 </div>
                                 <div class="mb-3">
                                     <label for="date_fin" class="form-label">Date Fin</label>
-                                    <input type="date" id="date_fin" class="form-control" x-model="formData.date_fin" required>
+                                    <input type="date" id="date_fin" class="form-control" x-model="formData.date_fin"
+                                        required>
                                 </div>
                                 <div class="mb-3">
                                     <label for="montant_loyer" class="form-label">Montant Loyers</label>
-                                    <input type="number" step="0.01" id="montant_loyer" class="form-control" x-model="formData.montant_loyer" required>
+                                    <input type="number" step="0.01" id="montant_loyer" class="form-control"
+                                        x-model="formData.montant_loyer" required>
                                 </div>
                                 <div class="mb-3">
                                     <label for="caution" class="form-label">Caution</label>
-                                    <input type="number" step="0.01" id="caution" class="form-control" x-model="formData.caution" required>
+                                    <input type="number" step="0.01" id="caution" class="form-control"
+                                        x-model="formData.caution" required>
                                 </div>
-                                <button type="submit" class="btn btn-primary" x-text="isEdite ? 'Mettre à jour' : 'Enregistrer'"></button>
+                                <button type="submit" class="btn btn-primary"
+                                    x-text="isEdite ? 'Mettre à jour' : 'Enregistrer'"></button>
                             </form>
                         </div>
                     </div>
@@ -168,8 +180,12 @@
                 openModal(contrat = null) {
                     this.isEdite = contrat !== null;
                     if (this.isEdite) {
-                        this.currentContrat = { ...contrat };
-                        this.formData = { ...this.currentContrat };
+                        this.currentContrat = {
+                            ...contrat
+                        };
+                        this.formData = {
+                            ...this.currentContrat
+                        };
                     } else {
                         this.resetForm();
                     }
@@ -190,7 +206,8 @@
                 async submitForm() {
                     this.isLoading = true;
 
-                    if (!this.formData.locataire_id || !this.formData.bien_id || !this.formData.date_debut || !this.formData.date_fin || !this.formData.montant_loyer || !this.formData.caution) {
+                    if (!this.formData.locataire_id || !this.formData.bien_id || !this.formData.date_debut || !this
+                        .formData.date_fin || !this.formData.montant_loyer || !this.formData.caution) {
                         Swal.fire({
                             icon: 'error',
                             title: 'Tous les champs sont requis.',
@@ -219,6 +236,7 @@
                         });
 
                         if (response.ok) {
+
                             const data = await response.json();
                             const contrat = data.contrat;
 
