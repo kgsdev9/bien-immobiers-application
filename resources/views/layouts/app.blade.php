@@ -121,7 +121,7 @@
                                     class="menu-item menu-lg-down-accordion me-0 me-lg-2">
                                     <!--begin:Menu link-->
                                     <span class="menu-link">
-                                        <span class="menu-title">QuittanceC</span>
+                                        <span class="menu-title">Quittance</span>
                                         <span class=" d-lg-none"></span>
                                     </span>
 
@@ -131,7 +131,7 @@
                                 <a href="{{ route('facturepersonnalite.index') }}" class="menu-item  me-0 me-lg-2">
                                     <!--begin:Menu link-->
                                     <span class="menu-link">
-                                        <span class="menu-title">Proforma Client </span>
+                                        <span class="menu-title">Rapport loyer </span>
                                         <span class="d-lg-none"></span>
                                     </span>
 
@@ -141,17 +141,17 @@
                                     class="menu-item menu-lg-down-accordion me-0 me-lg-2">
                                     <!--begin:Menu link-->
                                     <span class="menu-link">
-                                        <span class="menu-title">Liste des factures</span>
+                                        <span class="menu-title">Rapport paiement </span>
                                         <span class=" d-lg-none"></span>
                                     </span>
 
                                 </a>
 
-                                <a href="{{ route('product.pos') }}"
+                                <a href="{{ route('gestiondossiers.index') }}"
                                     class="menu-item menu-lg-down-accordion menu-sub-lg-down-indention me-0 me-lg-2">
                                     <!--begin:Menu link-->
                                     <span class="menu-link">
-                                        <span class="menu-title">Création de facture </span>
+                                        <span class="menu-title">Gestion des dossiers</span>
                                         <span class="d-lg-none"></span>
                                     </span>
 
@@ -668,84 +668,9 @@
                                         <span class="menu-title">Mes Paiments</span>
                                     </span>
                                 </a>
-
-
-
-
-
-                                <div class="menu-item pt-5">
-                                    <div class="menu-content">
-                                        <span class="menu-heading fw-bold text-uppercase fs-7">Boutique</span>
-                                    </div>
-                                </div>
-
-
-
-
-
-                                <div class="menu-item pt-5">
-                                    <div class="menu-content">
-                                        <span class="menu-heading fw-bold text-uppercase fs-7">Factures proforma
-                                        </span>
-                                    </div>
-                                </div>
-
-                                <div data-kt-menu-trigger="click" class="menu-item menu-accordion">
-                                    <!--begin:Menu link-->
-                                    <span class="menu-link">
-                                        <span class="menu-icon">
-                                            <!--begin::Svg Icon | path: icons/duotune/layouts/lay008.svg-->
-                                            <span class="svg-icon svg-icon-2">
-                                                <svg width="24" height="24" viewBox="0 0 24 24"
-                                                    fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path
-                                                        d="M20 7H3C2.4 7 2 6.6 2 6V3C2 2.4 2.4 2 3 2H20C20.6 2 21 2.4 21 3V6C21 6.6 20.6 7 20 7ZM7 9H3C2.4 9 2 9.4 2 10V20C2 20.6 2.4 21 3 21H7C7.6 21 8 20.6 8 20V10C8 9.4 7.6 9 7 9Z"
-                                                        fill="currentColor" />
-                                                    <path opacity="0.3"
-                                                        d="M20 21H11C10.4 21 10 20.6 10 20V10C10 9.4 10.4 9 11 9H20C20.6 9 21 9.4 21 10V20C21 20.6 20.6 21 20 21Z"
-                                                        fill="currentColor" />
-                                                </svg>
-                                            </span>
-                                            <!--end::Svg Icon-->
-                                        </span>
-                                        <span class="menu-title">Facture Proforma </span>
-                                        <span class="menu-arrow"></span>
-                                    </span>
-                                    <!--end:Menu link-->
-                                    <!--begin:Menu sub-->
-                                    <div class="menu-sub menu-sub-accordion">
-                                        <!--begin:Menu item-->
-                                        <div class="menu-item">
-                                            <!--begin:Menu link-->
-                                            <a class="menu-link" href="{{ route('factures.index') }}">
-                                                <span class="menu-bullet">
-                                                    <span class="bullet bullet-dot"></span>
-                                                </span>
-                                                <span class="menu-title">Facture Proforma libre </span>
-                                            </a>
-                                            <!--end:Menu link-->
-                                        </div>
-
-                                        <div class="menu-item">
-                                            <!--begin:Menu link-->
-                                            <a class="menu-link" href="{{ route('facturepersonnalite.index') }}">
-                                                <span class="menu-bullet">
-                                                    <span class="bullet bullet-dot"></span>
-                                                </span>
-                                                <span class="menu-title">Facture Proforma Client </span>
-                                            </a>
-                                            <!--end:Menu link-->
-                                        </div>
-
-                                    </div>
-                                    <!--end:Menu sub-->
-                                </div>
-
-
                             </div>
-                            <!--end::Menu-->
+                        
                         </div>
-                        <!--end::Menu wrapper-->
                     </div>
 
                     <div class="app-sidebar-footer flex-column-auto pt-2 pb-6 px-6" id="kt_app_sidebar_footer">
@@ -782,8 +707,9 @@
                         <!--begin::Copyright-->
                         <div class="text-dark order-2 order-md-1">
                             <span class="text-muted fw-semibold me-1">2023&copy;</span>
-                            <a href="#" target="_blank" class="text-gray-800 text-hover-primary">Carriere pro
-                                plus téchnologie</a>
+                            <a href="#" target="_blank" class="text-gray-800 text-hover-primary">KGS
+                                INFORMATIQUE
+                            </a>
                         </div>
                         <!--end::Copyright-->
                         <!--begin::Menu-->

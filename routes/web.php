@@ -9,6 +9,7 @@ use App\Http\Controllers\Contrat\ContratController;
 use App\Http\Controllers\Depenses\DepensesController;
 use App\Http\Controllers\Factures\FactureController;
 use App\Http\Controllers\Factures\FacturePersonnaliseController;
+use App\Http\Controllers\GestionDossiers\DossierController;
 use App\Http\Controllers\Home\HomeController;
 use App\Http\Controllers\Impression\Facture\ImpressionFactureController;
 use App\Http\Controllers\Loyer\PaiemntLoyerController;
@@ -54,6 +55,8 @@ Route::resource('/communes', CommuneController::class);
 Route::resource('/typebiens', TypeBienController::class);
 Route::resource('/contrat', ContratController::class);
 Route::resource('/paiements', PaiemntLoyerController::class);
+Route::resource('/gestiondossiers', DossierController::class);
+
 
 Route::get('/rapport', [RapportController::class, 'generateRapportForm'])->name('vente.rapport');
 Route::post('/rapport/vente', [RapportController::class, 'generateRapport'])->name('rapport.vente');
