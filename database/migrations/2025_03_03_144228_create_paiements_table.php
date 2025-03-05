@@ -16,11 +16,12 @@ class CreatePaiementsTable extends Migration
         Schema::create('paiements', function (Blueprint $table) {
             $table->id();
             $table->foreignId('contrat_id')->constrained('contrats')->onDelete('cascade');
-            $table->date('mois_paye');
-            $table->decimal('montant', 10, 2);
+            $table->foreignId('mois_id')->constrained('mois')->onDelete('cascade');
+            $table->foreignId('modereglement_id')->constrained('mode_reglements')->onDelete('cascade');
+            $table->decimal('montant', 30, 2);
             $table->dateTime('date_paiement');
-            $table->enum('mode_paiement', ['Espèces', 'Virement', 'Mobile Money', 'Chèque']);
-            $table->string('reference_paiement', 100)->nullable();
+            $table->string('reference_paiement')->unique();
+            $table->foreignId('parametrestatus_id')->nullable()->constrained('t_parametre_satuses')->onDelete('cascade');
             $table->timestamps();
         });
     }

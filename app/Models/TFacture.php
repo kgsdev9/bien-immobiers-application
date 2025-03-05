@@ -10,6 +10,7 @@ class TFacture extends Model
     use HasFactory;
 
     protected $table = "t_factures";
+
     protected $fillable = [
         'codefacture',
         'remise',
@@ -48,9 +49,8 @@ class TFacture extends Model
         return $this->hasMany(TfactureLigne::class, 'numvente', 'numvente');
     }
 
-
     public function modereglement()
     {
-        return $this->belongsTo(ModeReglemnt::class, 'mode_reglement_id');
+        return $this->belongsTo(modereglement::class, 'mode_reglement_id');
     }
 }

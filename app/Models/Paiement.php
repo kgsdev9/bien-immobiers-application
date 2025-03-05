@@ -10,8 +10,8 @@ class Paiement extends Model
     use HasFactory;
 
     protected $fillable = [
-        'contrat_id', 'mois_paye', 'montant', 'date_paiement',
-        'mode_paiement', 'reference_paiement'
+        'contrat_id', 'mois_id', 'montant', 'date_paiement',
+        'modereglement_id', 'reference_paiement'
     ];
 
     public function contrat()

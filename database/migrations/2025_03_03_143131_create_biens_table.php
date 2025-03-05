@@ -18,10 +18,11 @@ class CreateBiensTable extends Migration
             $table->string('nom', 255);
             $table->text('adresse');
             $table->decimal('superficie', 10, 2);
-            $table->integer('nombre_pieces');
+            $table->string('nombre_pieces')->nullable();
             $table->foreignId('type_bien_id')->constrained('type_biens')->onDelete('cascade');
             $table->foreignId('commune_id')->constrained('communes')->onDelete('cascade');
-            $table->enum('statut', ['Disponible', 'Loué', 'Réservé'])->default('Disponible');
+            $table->foreignId('parametrestatus_id')->nullable()->constrained('t_parametre_satuses')->onDelete('cascade');
+            $table->foreignId('proprietaire_id')->nullable()->constrained('proprietaires')->onDelete('cascade');
             $table->timestamps();
         });
     }

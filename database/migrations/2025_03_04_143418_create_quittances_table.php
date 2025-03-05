@@ -17,7 +17,8 @@ class CreateQuittancesTable extends Migration
             $table->id();
             $table->foreignId('paiement_id')->constrained('paiements')->onDelete('cascade');
             $table->date('date_emission');
-            $table->string('document', 255);
+            $table->string('referencepaiement')->unique();
+            $table->string('document', 255)->nullable();
             $table->timestamps();
         });
     }

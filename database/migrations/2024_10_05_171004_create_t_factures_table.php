@@ -31,8 +31,8 @@ class CreateTFacturesTable extends Migration
             $table->enum('status', ['en attente', 'valide', 'refuse'])->default('en attente');
             $table->string('adresse')->nullable();
             $table->date('date_echance')->nullable();
-            // $table->foreignId('mode_reglement_id')->nullable()->constrained('mode_reglemnts')->onDelete('cascade');
-            $table->unsignedBigInteger('client_id')->nullable();
+            $table->foreignId('mode_reglement_id')->nullable()->constrained('mode_reglements')->onDelete('cascade');
+            $table->unsignedBigInteger('locataire_id')->nullable();
             // $table->unsignedBigInteger('codedevise_id')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->decimal('montanttva', 30, 2)->nullable();

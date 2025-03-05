@@ -206,9 +206,21 @@
                                     </div>
 
                                     <div class="col-md-6 mb-3">
-                                        <label for="montantaregler" class="form-label">Montant à regler </label>
-                                        <input type="text" id="montantaregler" class="form-control"
-                                            x-model="formData.montantaregler">
+                                        <label for="commune" class="form-label">Commune Du bien </label>
+                                        <input type="text" id="commune" class="form-control"
+                                            x-model="formData.commune" disabled readonly>
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="mois_paye" class="form-label">Mois de paiements</label>
+                                        <input type="text" id="mois_paye" class="form-control"
+                                            x-model="formData.mois_paye">
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="datepaiement" class="form-label">Date de paiement</label>
+                                        <input type="date" id="datepaiement" class="form-control"
+                                            x-model="formData.datepaiement">
                                     </div>
 
                                     <div class="col-md-6 mb-3 mt-8">

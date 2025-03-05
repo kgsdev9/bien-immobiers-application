@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ModeReglemnt extends Model
+class Mois extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'name'
+        'mois'
     ];
 }

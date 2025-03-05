@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateJutificatifsTable extends Migration
+class CreateTParametreSatusesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,11 @@ class CreateJutificatifsTable extends Migration
      */
     public function up()
     {
-        Schema::create('jutificatifs', function (Blueprint $table) {
+        Schema::create('t_parametre_satuses', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('locataire_id')->constrained('locataires')->onDelete('cascade');
-            $table->string('document');
+            $table->string('libelleparametre');
+            $table->string('libellestatus');
+            $table->string('codeparametrestatus');
             $table->timestamps();
         });
     }
@@ -28,6 +29,6 @@ class CreateJutificatifsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('jutificatifs');
+        Schema::dropIfExists('t_parametre_satuses');
     }
 }

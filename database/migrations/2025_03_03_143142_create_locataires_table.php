@@ -15,14 +15,14 @@ class CreateLocatairesTable extends Migration
     {
         Schema::create('locataires', function (Blueprint $table) {
             $table->id();
-            $table->string('code_locataire', 50)->unique();
-            $table->string('nom', 100);
-            $table->string('prenom', 100);
-            $table->string('telephone', 20)->unique();
-            $table->string('email', 100)->unique();
+            $table->string('code_locataire')->unique();
+            $table->string('nom');
+            $table->string('prenom');
+            $table->string('telephone');
+            $table->string('email');
             $table->text('adresse');
-            $table->string('profession', 100);
-            $table->string('piece_identite', 255);
+            $table->string('profession');
+            $table->string('piece_identite');
             $table->timestamps();
         });
     }
