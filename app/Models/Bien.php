@@ -16,7 +16,7 @@ class Bien extends Model
         'nombre_pieces',
         'type_bien_id',
         'commune_id',
-        'statut'
+        'parametre_status_id'
     ];
 
     public function typeBien()
@@ -28,6 +28,12 @@ class Bien extends Model
     {
         return $this->belongsTo(Commune::class);
     }
+
+    public function status()
+    {
+        return $this->belongsTo(ParametreStatusBien::class, 'parametre_status_id');
+    }
+
 
     public function contrats()
     {

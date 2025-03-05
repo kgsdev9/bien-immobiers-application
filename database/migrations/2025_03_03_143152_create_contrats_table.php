@@ -22,7 +22,7 @@ class CreateContratsTable extends Migration
             $table->date('date_fin')->nullable();
             $table->decimal('montant_loyer', 30, 2);
             $table->decimal('caution', 30, 2);
-            $table->foreignId('parametrestatus_id')->nullable()->constrained('t_parametre_satuses')->onDelete('cascade');
+            $table->foreignId('parametre_status_id')->nullable()->constrained('parametre_status_contrats')->onDelete('cascade');
             $table->string('document', 255)->nullable();
             $table->timestamps();
         });

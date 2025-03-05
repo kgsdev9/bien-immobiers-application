@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTParametreSatusesTable extends Migration
+class CreateParametreStatusBiensTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,9 @@ class CreateTParametreSatusesTable extends Migration
      */
     public function up()
     {
-        Schema::create('t_parametre_satuses', function (Blueprint $table) {
+        Schema::create('parametre_status_biens', function (Blueprint $table) {
             $table->id();
-            $table->string('libelleparametre');
-            $table->string('libellestatus');
-            $table->string('codeparametrestatus');
+            $table->string('name');
             $table->timestamps();
         });
     }
@@ -29,6 +27,6 @@ class CreateTParametreSatusesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('t_parametre_satuses');
+        Schema::dropIfExists('parametre_status_biens');
     }
 }

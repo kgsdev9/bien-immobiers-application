@@ -21,7 +21,7 @@ class CreateBiensTable extends Migration
             $table->string('nombre_pieces')->nullable();
             $table->foreignId('type_bien_id')->constrained('type_biens')->onDelete('cascade');
             $table->foreignId('commune_id')->constrained('communes')->onDelete('cascade');
-            $table->foreignId('parametrestatus_id')->nullable()->constrained('t_parametre_satuses')->onDelete('cascade');
+            $table->foreignId('parametre_status_id')->nullable()->constrained('parametre_status_biens')->onDelete('cascade');
             $table->foreignId('proprietaire_id')->nullable()->constrained('proprietaires')->onDelete('cascade');
             $table->timestamps();
         });

@@ -21,7 +21,6 @@ class CreatePaiementsTable extends Migration
             $table->decimal('montant', 30, 2);
             $table->dateTime('date_paiement');
             $table->string('reference_paiement')->unique();
-            $table->foreignId('parametrestatus_id')->nullable()->constrained('t_parametre_satuses')->onDelete('cascade');
             $table->timestamps();
         });
     }

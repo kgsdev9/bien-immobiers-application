@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Biens;
 use App\Http\Controllers\Controller;
 use App\Models\Bien;
 use App\Models\Commune;
+use App\Models\ParametreStatusBien;
+use App\Models\TParametreSatus;
 use App\Models\TypeBien;
 use Illuminate\Http\Request;
 
@@ -12,10 +14,12 @@ class BienImmobilierController extends Controller
 {
     public function index()
     {
-        $listebiens = Bien::with(['commune', 'typeBien'])->get();
+        $listebiens = Bien::with(['commune', 'typeBien', 'status'])->get();
         $listecommunes = Commune::orderByDesc('created_at')->get();
         $listetypesbiens = TypeBien::orderByDesc('created_at')->get();
-        return view('biens.index', compact('listebiens', 'listecommunes', 'listetypesbiens'));
+        $statusbien = ParametreStatusBien::all();
+
+        return view('biens.index', compact('listebiens', 'listecommunes', 'listetypesbiens', 'statusbien'));
     }
 
     public function store(Request $request)
@@ -46,11 +50,13 @@ class BienImmobilierController extends Controller
             'nombre_pieces' => $request->nombre_pieces,
             'type_bien_id' => $request->type_bien_id,
             'commune_id' => $request->commune_id,
-            'statut' => $request->statut,
+            'parametre_status_id' => $request->statut,
         ];
 
-        $bien->load('commune', 'typeBien');
+
         $bien->update($data);
+
+        $bien->load('commune', 'typeBien', 'status');
 
         return response()->json(['message' => 'Bien mis à jour avec succès', 'bien' => $bien], 200);
     }
@@ -67,10 +73,10 @@ class BienImmobilierController extends Controller
             'nombre_pieces' => $request->nombre_pieces,
             'type_bien_id' => $request->type_bien_id,
             'commune_id' => $request->commune_id,
-            'statut' => $request->statut,
+            'parametre_status_id' => $request->statut,
         ]);
 
-        $bien->load('commune', 'typeBien');
+        $bien->load('commune', 'typeBien', 'status');
 
         return response()->json(['message' => 'Bien créé avec succès', 'bien' => $bien], 201);
     }

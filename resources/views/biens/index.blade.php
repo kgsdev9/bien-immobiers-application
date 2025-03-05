@@ -82,7 +82,9 @@
                                                     <td x-text="bien.nombre_pieces"></td>
                                                     <td x-text="bien.type_bien.nom"></td>
                                                     <td x-text="bien.commune.nom"></td>
-                                                    <td x-text="bien.statut"></td>
+                                                    <td x-text="bien.status ? bien.status.name : 'Statut non défini'">
+                                                    </td>
+
 
                                                     <td class="text-end">
                                                         <button @click="openModal(bien)"
@@ -169,21 +171,25 @@
                                         <select id="type_bien_id" class="form-select" x-model="formData.type_bien_id"
                                             required>
                                             <option value="">Sélectionner un type</option>
-                                            <template x-for="type in listetypesbiens" :key="type.id">
-                                                <option :value="type.id" x-text="type.nom"></option>
-                                            </template>
+                                            @foreach ($listetypesbiens as $typbien)
+                                                <option value="{{ $typbien->id }}">
+                                                    {{ $typbien->nom }}
+                                                </option>
+                                            @endforeach
                                         </select>
                                     </div>
 
                                     <!-- Commune -->
                                     <div class="col-md-6 mb-3">
                                         <label for="commune_id" class="form-label">Commune</label>
-                                        <select id="commune_id" class="form-select" x-model="formData.commune_id"
+                                        <select id="statut" class="form-select" x-model="formData.commune_id"
                                             required>
-                                            <option value="">Sélectionner une commune</option>
-                                            <template x-for="commune in communes" :key="commune.id">
-                                                <option :value="commune.id" x-text="commune.nom"></option>
-                                            </template>
+                                            <option value="">Choisir une commune</option>
+                                            @foreach ($listecommunes as $commune)
+                                                <option value="{{ $commune->id }}">
+                                                    {{ $commune->nom }}
+                                                </option>
+                                            @endforeach
                                         </select>
                                     </div>
 
@@ -191,11 +197,15 @@
                                     <div class="col-md-6 mb-3">
                                         <label for="statut" class="form-label">Statut</label>
                                         <select id="statut" class="form-select" x-model="formData.statut" required>
-                                            <option value="">Sélectionner un statut</option>
-                                            <option value="Disponible" x-text="'Disponible'"></option>
-                                            <option value="Indisponible" x-text="'Indisponible'"></option>
+                                            <option value="">Choisir un status</option>
+                                            @foreach ($statusbien as $status)
+                                                <option value="{{ $status->id }}">
+                                                    {{ $status->name }}
+                                                </option>
+                                            @endforeach
                                         </select>
                                     </div>
+
 
                                     <div class="col-md-6 mb-3 mt-8">
                                         <label for="submit" class="form-label"></label>
@@ -217,11 +227,8 @@
         function bienSearch() {
             return {
                 searchTerm: '',
-                listBiens: @json($listebiens), // Données venant de Laravel
-                communes: @json($listecommunes), // Données venant de Laravel
-                listetypesbiens: @json($listetypesbiens), // Données venant de Laravel
+                listBiens: @json($listebiens),
                 filteredBiens: [],
-
                 currentPage: 1,
                 biensPerPage: 10,
                 totalPages: 0,
@@ -263,7 +270,7 @@
                             nombre_pieces: this.currentBien.nombre_pieces,
                             type_bien_id: this.currentBien.type_bien_id,
                             commune_id: this.currentBien.commune_id,
-                            statut: this.currentBien.statut
+                            statut: this.currentBien.parametre_status_id
                         };
                     } else {
                         this.resetForm();

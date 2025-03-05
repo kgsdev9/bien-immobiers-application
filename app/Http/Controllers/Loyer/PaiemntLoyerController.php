@@ -27,18 +27,21 @@ class PaiemntLoyerController extends Controller
         // Vérifier si le paiement existe déjà avec la référence
         $paiementId = $request->input('paiement_id');
 
-        if ($paiementId) {
+        if ($paiementId)
+        {
             // Si paiement_id existe, on modifie le paiement
             $paiement = Paiement::find($paiementId);
 
             // Si le paiement n'existe pas, on le crée
-            if (!$paiement) {
+            if (!$paiement)
+            {
                 return $this->createPaiement($request);
             }
 
             // Si le paiement existe, on procède à la mise à jour
             return $this->updatePaiement($paiement, $request);
-        } else {
+        } else
+        {
             // Si paiement_id est absent, on crée un nouveau paiement
             return $this->createPaiement($request);
         }
