@@ -206,8 +206,8 @@
                 async submitForm() {
                     this.isLoading = true;
 
-                    if (!this.formData.locataire_id || !this.formData.bien_id || !this.formData.date_debut || !this
-                        .formData.date_fin || !this.formData.montant_loyer || !this.formData.caution) {
+                    // Validation des champs requis
+                    if (!this.formData.locataire_id || !this.formData.bien_id || !this.formData.date_debut || !this.formData.date_fin || !this.formData.montant_loyer || !this.formData.caution) {
                         Swal.fire({
                             icon: 'error',
                             title: 'Tous les champs sont requis.',
@@ -235,15 +235,16 @@
                             body: formData,
                         });
 
+                        // Vérification de la réponse du backend
                         if (response.ok) {
-
                             const data = await response.json();
                             const contrat = data.contrat;
+                            const message = data.message || 'Contrat enregistré avec succès !';  // Message renvoyé par le backend
 
                             if (contrat) {
                                 Swal.fire({
                                     icon: 'success',
-                                    title: 'Contrat enregistré avec succès !',
+                                    title: message,
                                     showConfirmButton: false,
                                     timer: 1500
                                 });
@@ -263,9 +264,12 @@
                                 this.hideModal();
                             }
                         } else {
+                            // Si la réponse n'est pas OK, traiter l'erreur
+                            const errorData = await response.json();
+                            const errorMessage = errorData.message || 'Erreur lors de l\'enregistrement.';
                             Swal.fire({
                                 icon: 'error',
-                                title: 'Erreur lors de l\'enregistrement.',
+                                title: errorMessage,
                                 showConfirmButton: true
                             });
                         }
@@ -280,6 +284,7 @@
                         this.isLoading = false;
                     }
                 },
+
 
                 deleteContrat(contratId) {
                     // Code pour supprimer un contrat
