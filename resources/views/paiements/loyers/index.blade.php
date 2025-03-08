@@ -75,12 +75,28 @@
                                         <tbody class="text-gray-600 fw-semibold">
                                             <template x-for="paiement in paginatedPaiements" :key="paiement.id">
                                                 <tr>
-                                                    <td x-text="paiement.contrat_id"></td>
-                                                    <td x-text="paiement.mois_paye"></td>
+                                                    <!-- Affichage du contrat_id -->
+                                                    <td
+                                                        x-text="paiement.contrat.locataire.nom + ' ' + paiement.contrat.locataire.prenom">
+                                                    </td>
+
+                                                    <!-- Affichage du mois payé, ici on affiche le nom du mois si disponible -->
+                                                    <td x-text="paiement.mois.name"></td>
+                                                    <!-- Assurez-vous que le champ est bien 'nom' ou modifiez-le en fonction de votre base de données -->
+
+                                                    <!-- Affichage du montant -->
                                                     <td x-text="paiement.montant"></td>
+
+                                                    <!-- Affichage de la date de paiement -->
                                                     <td x-text="paiement.date_paiement"></td>
-                                                    <td x-text="paiement.mode_paiement"></td>
+
+                                                    <!-- Affichage du mode de paiement -->
+                                                    <td x-text="paiement.modereglement.name"></td>
+                                                    <!-- Assurez-vous que 'nom' est le bon champ -->
+
+                                                    <!-- Affichage de la référence de paiement -->
                                                     <td x-text="paiement.reference_paiement"></td>
+
                                                     <td class="text-end">
                                                         <button @click="openModal(paiement)"
                                                             class="btn btn-primary btn-sm mx-2">
@@ -96,6 +112,7 @@
                                         </tbody>
                                     </table>
                                 </template>
+
 
                             </div>
 
@@ -212,15 +229,34 @@
                                     </div>
 
                                     <div class="col-md-6 mb-3">
-                                        <label for="mois_paye" class="form-label">Mois de paiements</label>
-                                        <input type="text" id="mois_paye" class="form-control"
-                                            x-model="formData.mois_paye">
+                                        <label for="mois_id" class="form-label">Mois de paiements</label>
+                                        <select id="mois_id" class="form-control" x-model="formData.mois_id" required>
+                                            <option value="">Choisir un mois</option>
+                                            @foreach ($listemois as $mois)
+                                                <option value="{{ $mois->id }}">
+                                                    {{ $mois->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
                                     </div>
 
                                     <div class="col-md-6 mb-3">
-                                        <label for="datepaiement" class="form-label">Date de paiement</label>
-                                        <input type="date" id="datepaiement" class="form-control"
-                                            x-model="formData.datepaiement">
+                                        <label for="modereglement_id" class="form-label">Mode de reglement</label>
+                                        <select id="modereglement_id" class="form-control"
+                                            x-model="formData.modereglement_id" required>
+                                            <option value="">Choisir un mode de reglement</option>
+                                            @foreach ($listemodereglement as $modereglement)
+                                                <option value="{{ $modereglement->id }}">
+                                                    {{ $modereglement->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="date_paiement" class="form-label">Date de paiement</label>
+                                        <input type="date" id="date_paiement" class="form-control"
+                                            x-model="formData.date_paiement">
                                     </div>
 
                                     <div class="col-md-6 mb-3 mt-8">
@@ -257,10 +293,10 @@
                 isEdite: false,
                 formData: {
                     contrat_id: '',
-                    mois_paye: '',
+                    mois_id: '',
                     montant: '',
                     date_paiement: '',
-                    mode_paiement: '',
+                    modereglement_id: '',
                     reference_paiement: '',
                     locataire_nom: '',
                     bien_nom: '',
@@ -383,14 +419,12 @@
 
                 async submitForm() {
                     this.isLoading = true;
-
                     const formData = new FormData();
                     formData.append('contrat_id', this.formData.contrat_id);
-                    formData.append('mois_paye', this.formData.mois_paye);
-                    formData.append('montant', this.formData.montant);
+                    formData.append('mois_id', this.formData.mois_id);
+                    formData.append('montant', this.formData.prixloyer);
                     formData.append('date_paiement', this.formData.date_paiement);
-                    formData.append('mode_paiement', this.formData.mode_paiement);
-                    formData.append('reference_paiement', this.formData.reference_paiement);
+                    formData.append('modereglement_id', this.formData.modereglement_id);
 
                     if (this.currentPaiement) {
                         formData.append('paiement_id', this.currentPaiement.id);
@@ -410,6 +444,7 @@
                             const paiement = data.paiement;
 
                             if (paiement) {
+                                // Si le paiement a été effectué avec succès
                                 Swal.fire({
                                     icon: 'success',
                                     title: 'Paiement enregistré avec succès!',
@@ -424,18 +459,28 @@
                                     this.listePaiements.push(paiement);
                                 }
 
-                                this.listePaiements.sort((a, b) => new Date(b.created_at) - new Date(a
-                                    .created_at));
+                                this.listePaiements.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
                                 this.filterPaiements();
                                 this.resetForm();
                                 this.hideModal();
                             }
                         } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Erreur lors de l\'enregistrement.',
-                                showConfirmButton: true
-                            });
+                            // Si le paiement existe déjà
+                            const data = await response.json();
+                            if (data.paiement_existe) {
+                                Swal.fire({
+                                    icon: 'warning',
+                                    title: 'Le paiement pour ce mois a déjà été effectué sous ce contrat.',
+                                    showConfirmButton: true
+                                });
+                            } else {
+                                // Si une autre erreur se produit
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Erreur lors de l\'enregistrement.',
+                                    showConfirmButton: true
+                                });
+                            }
                         }
                     } catch (error) {
                         console.error('Erreur réseau :', error);
@@ -448,6 +493,7 @@
                         this.isLoading = false;
                     }
                 },
+
 
                 async deletePaiement(paiementId) {
                     try {

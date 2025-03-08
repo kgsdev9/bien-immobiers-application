@@ -12,6 +12,12 @@ use Illuminate\Http\Request;
 
 class BienImmobilierController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+    
     public function index()
     {
         $listebiens = Bien::with(['commune', 'typeBien', 'status'])->get();

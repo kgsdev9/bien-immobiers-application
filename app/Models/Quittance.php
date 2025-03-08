@@ -9,7 +9,7 @@ class Quittance extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['paiement_id', 'date_emission', 'document'];
+    protected $fillable = ['paiement_id', 'date_emission', 'document', 'referencepaiement'];
 
     public function paiement()
     {

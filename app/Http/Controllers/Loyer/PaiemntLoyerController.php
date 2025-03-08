@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Loyer;
 
 use App\Http\Controllers\Controller;
 use App\Models\Contrat;
+use App\Models\ModeReglement;
+use App\Models\Mois;
 use App\Models\Paiement;
 use App\Models\Quittance;
 use Illuminate\Http\Request;
@@ -17,35 +19,48 @@ class PaiemntLoyerController extends Controller
      */
     public function index()
     {
-        $listepayment = Paiement::all();
+        $listepayment = Paiement::with(['contrat.locataire', 'mois', 'modereglement'])->get();
+        $listemois = Mois::all();
+        $listemodereglement = ModeReglement::all();
+
         $contrats = Contrat::with(['locataire', 'bien.commune'])->get();
-        return view('paiements.loyers.index', compact('listepayment', 'contrats'));
+        return view('paiements.loyers.index', compact('listepayment', 'contrats', 'listemois', 'listemodereglement'));
     }
 
     public function store(Request $request)
     {
-        // Vérifier si le paiement existe déjà avec la référence
-        $paiementId = $request->input('paiement_id');
+        // Vérifier si un paiement existe déjà pour ce contrat et ce mois
+        $existingPaiement = Paiement::where('contrat_id', $request->contrat_id)
+            ->where('mois_id', $request->mois_id)
+            ->first();
 
-        if ($paiementId)
-        {
-            // Si paiement_id existe, on modifie le paiement
+        // Si un paiement existe déjà pour ce contrat et ce mois
+        if ($existingPaiement) {
+            return response()->json([
+                'message' => 'Le paiement pour ce mois a déjà été effectué sous ce contrat.',
+                'paiement_existe' => true, // Indication qu'un paiement existe déjà
+            ], 400);
+        }
+
+        // Si paiement_id est fourni, on met à jour le paiement existant
+        $paiementId = $request->input('paiement_id');
+        if ($paiementId) {
+            // Trouver le paiement à mettre à jour
             $paiement = Paiement::find($paiementId);
 
-            // Si le paiement n'existe pas, on le crée
-            if (!$paiement)
-            {
+            // Si le paiement n'existe pas, on crée un nouveau paiement
+            if (!$paiement) {
                 return $this->createPaiement($request);
             }
 
-            // Si le paiement existe, on procède à la mise à jour
+            // Sinon, on procède à la mise à jour
             return $this->updatePaiement($paiement, $request);
-        } else
-        {
-            // Si paiement_id est absent, on crée un nouveau paiement
-            return $this->createPaiement($request);
         }
+
+        // Sinon, si paiement_id n'existe pas, on crée un nouveau paiement
+        return $this->createPaiement($request);
     }
+
 
     private function updatePaiement(Paiement $paiement, Request $request)
     {
@@ -73,31 +88,77 @@ class PaiemntLoyerController extends Controller
         ], 200);
     }
 
+
+    private function generateUniqueReference()
+    {
+        // Récupérer le dernier paiement avec une référence commençant par "AG-"
+        $lastPayment = Paiement::where('reference_paiement', 'like', 'AG-%')
+            ->orderBy('reference_paiement', 'desc')
+            ->first();
+
+        // Extraire le dernier numéro à partir de la référence (exemple : "AG-98087")
+        if ($lastPayment) {
+            $lastReference = $lastPayment->reference_paiement;
+            $lastNumber = (int) substr($lastReference, 3);  // On récupère tout après "AG-"
+            $newNumber = $lastNumber + 1;  // Incrémenter de 1
+        } else {
+            // Si aucun paiement n'existe, on commence avec 98001
+            $newNumber = 98001;
+        }
+
+        // Générer la nouvelle référence avec le numéro incrémenté
+        return 'AG-' . $newNumber;
+    }
+
+
+
     private function createPaiement(Request $request)
     {
+        // Vérification si un paiement existe déjà pour ce contrat et ce mois
+        $existingPaiement = Paiement::where('contrat_id', $request->contrat_id)
+            ->where('mois_id', $request->mois_id)
+            ->first();
+
+
+
+        if ($existingPaiement) {
+            // Si un paiement existe déjà pour ce contrat et ce mois, renvoyer une erreur
+            return response()->json([
+                'message' => 'Un paiement a déjà été effectué pour ce mois sous ce contrat.',
+            ], 400);
+        }
+
+        // Vérification et génération de la référence de paiement si elle n'est pas fournie
+        $reference_paiement = $this->generateUniqueReference();
+
         // Création d'un nouveau paiement
         $paiement = Paiement::create([
             'contrat_id' => $request->contrat_id,
-            'mois_paye' => $request->mois_paye,
+            'mois_id' => $request->mois_id, // Utilisation de mois_id au lieu de mois_paye
             'montant' => $request->montant,
             'date_paiement' => $request->date_paiement,
-            'mode_paiement' => $request->mode_paiement,
-            'reference_paiement' => $request->reference_paiement,
+            'modereglement_id' => $request->modereglement_id, // Utilisation de modereglement_id au lieu de mode_paiement
+            'reference_paiement' => $reference_paiement, // Référence du paiement
         ]);
 
         // Création automatique de la quittance
         $quittance = Quittance::create([
             'paiement_id' => $paiement->id,
+            'referencepaiement' => $reference_paiement,
             'date_emission' => now(),
             'document' => 'Quittance pour paiement ' . $paiement->reference_paiement,
         ]);
 
+        $paiement->load('contrat.locataire', 'mois', 'modereglement');
+        
         return response()->json([
             'message' => 'Paiement créé avec succès, quittance générée.',
             'paiement' => $paiement,
             'quittance' => $quittance
         ], 201);
     }
+
+
 
     /**
      * Remove the specified resource from storage.
