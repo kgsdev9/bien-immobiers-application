@@ -306,44 +306,7 @@
                 },
 
 
-                printProducts() {
-                    let printContent = '<h1>Liste des catégories</h1>';
-                    printContent +=
-                        '<table border="1"><thead><tr><th>ID</th><th>Nom</th><th>Catégorie</th></tr></thead><tbody>';
-
-                    this.filteredProducts.forEach(product => {
-                        printContent +=
-                            `<tr><td>${product.id}</td><td>${product.libellecategorieproduct}</td><td>${product.created_at}</td></tr>`;
-                    });
-
-                    printContent += '</tbody></table>';
-
-                    const printWindow = window.open('', '', 'height=500,width=800');
-                    printWindow.document.write('<html><head><title>Impression des produits</title></head><body>');
-                    printWindow.document.write(printContent);
-                    printWindow.document.write('</body></html>');
-                    printWindow.document.close();
-                    printWindow.print();
-                },
-
-                exportProducts() {
-                    let csvContent = "ID,Catégorie\n";
-
-                    this.filteredProducts.forEach(product => {
-                        csvContent +=
-                            `${product.id},${product.libellecategorieproduct}\n`;
-                    });
-
-                    // Créer un fichier CSV et le télécharger
-                    const blob = new Blob([csvContent], {
-                        type: 'text/csv;charset=utf-8;'
-                    });
-                    const link = document.createElement("a");
-                    const url = URL.createObjectURL(blob);
-                    link.setAttribute("href", url);
-                    link.setAttribute("download", "produits_filtrés.csv");
-                    link.click();
-                },
+            
 
 
                 filterByCategory() {
@@ -391,7 +354,7 @@
                                     showConfirmButton: false,
                                     timer: 1500,
                                 });
-                                
+
                                 // Retirer le produit de la liste `this.products`
                                 this.products = this.products.filter(product => product.id !== categorieId);
 

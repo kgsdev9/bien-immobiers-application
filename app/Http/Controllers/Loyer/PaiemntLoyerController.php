@@ -12,6 +12,12 @@ use Illuminate\Http\Request;
 
 class PaiemntLoyerController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -19,7 +25,8 @@ class PaiemntLoyerController extends Controller
      */
     public function index()
     {
-        $listepayment = Paiement::with(['contrat.locataire', 'mois', 'modereglement'])->get();
+        $listepayment = Paiement::with(['contrat.locataire', 'contrat.bien.commune', 'mois', 'modereglement'])->get();
+
         $listemois = Mois::all();
         $listemodereglement = ModeReglement::all();
 
@@ -27,14 +34,34 @@ class PaiemntLoyerController extends Controller
         return view('paiements.loyers.index', compact('listepayment', 'contrats', 'listemois', 'listemodereglement'));
     }
 
+
     public function store(Request $request)
     {
+        // Récupérer l'ID du paiement (si on est en mode de mise à jour)
+        $paiementId = $request->input('paiement_id');
+
+        // Vérifier si on est en train de modifier un paiement
+        if ($paiementId) {
+            // Trouver le paiement à mettre à jour
+            $paiement = Paiement::find($paiementId);
+
+            // Si le paiement existe, on ne fait pas la vérification du paiement existant
+            if ($paiement) {
+                // Vérifier si on modifie un paiement pour le même contrat et mois
+                // Si on est en train de modifier un paiement existant, ignorer la vérification
+                if ($paiement->contrat_id == $request->contrat_id && $paiement->mois_id == $request->mois_id) {
+                    return $this->updatePaiement($paiement, $request);
+                }
+            }
+        }
+
+        // Si on est en mode de création (pas de paiement_id ou paiement_id n'existe pas)
         // Vérifier si un paiement existe déjà pour ce contrat et ce mois
         $existingPaiement = Paiement::where('contrat_id', $request->contrat_id)
             ->where('mois_id', $request->mois_id)
             ->first();
 
-        // Si un paiement existe déjà pour ce contrat et ce mois
+        // Si un paiement existe déjà pour ce contrat et ce mois, retourner une erreur
         if ($existingPaiement) {
             return response()->json([
                 'message' => 'Le paiement pour ce mois a déjà été effectué sous ce contrat.',
@@ -43,35 +70,26 @@ class PaiemntLoyerController extends Controller
         }
 
         // Si paiement_id est fourni, on met à jour le paiement existant
-        $paiementId = $request->input('paiement_id');
         if ($paiementId) {
-            // Trouver le paiement à mettre à jour
-            $paiement = Paiement::find($paiementId);
-
-            // Si le paiement n'existe pas, on crée un nouveau paiement
-            if (!$paiement) {
-                return $this->createPaiement($request);
-            }
-
-            // Sinon, on procède à la mise à jour
             return $this->updatePaiement($paiement, $request);
         }
 
-        // Sinon, si paiement_id n'existe pas, on crée un nouveau paiement
+        // Sinon, on crée un nouveau paiement
         return $this->createPaiement($request);
     }
 
 
     private function updatePaiement(Paiement $paiement, Request $request)
     {
+
+
         // Mise à jour du paiement
         $paiement->update([
             'contrat_id' => $request->contrat_id,
-            'mois_paye' => $request->mois_paye,
+            'mois_id' => $request->mois_id, // Mise à jour du mois payé
             'montant' => $request->montant,
             'date_paiement' => $request->date_paiement,
-            'mode_paiement' => $request->mode_paiement,
-            'reference_paiement' => $request->reference_paiement,
+            'modereglement_id' => $request->modereglement_id, // Mise à jour du mode de paiement
         ]);
 
         // Mise à jour de la quittance associée
@@ -81,12 +99,20 @@ class PaiemntLoyerController extends Controller
             'document' => 'Quittance mise à jour pour paiement ' . $paiement->reference_paiement,
         ]);
 
+        // Charger les informations associées au paiement et à la quittance
+        $paiement->load('contrat.locataire', 'contrat.bien.commune', 'mois', 'modereglement');
+
         return response()->json([
             'message' => 'Paiement et quittance mis à jour avec succès.',
             'paiement' => $paiement,
             'quittance' => $quittance
         ], 200);
     }
+
+
+
+
+
 
 
     private function generateUniqueReference()
@@ -112,14 +138,14 @@ class PaiemntLoyerController extends Controller
 
 
 
+
+
     private function createPaiement(Request $request)
     {
         // Vérification si un paiement existe déjà pour ce contrat et ce mois
         $existingPaiement = Paiement::where('contrat_id', $request->contrat_id)
             ->where('mois_id', $request->mois_id)
             ->first();
-
-
 
         if ($existingPaiement) {
             // Si un paiement existe déjà pour ce contrat et ce mois, renvoyer une erreur
@@ -149,14 +175,16 @@ class PaiemntLoyerController extends Controller
             'document' => 'Quittance pour paiement ' . $paiement->reference_paiement,
         ]);
 
-        $paiement->load('contrat.locataire', 'mois', 'modereglement');
-        
+        // Charger les informations associées à ce paiement
+        $paiement->load('contrat.locataire', 'contrat.bien.commune', 'mois', 'modereglement');
+
         return response()->json([
             'message' => 'Paiement créé avec succès, quittance générée.',
             'paiement' => $paiement,
             'quittance' => $quittance
         ], 201);
     }
+
 
 
 

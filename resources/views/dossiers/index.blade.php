@@ -1,578 +1,353 @@
 @extends('layouts.app')
+@section('title', 'Gestion électronique des dossiers')
 @section('content')
-    <div class="app-main flex-column flex-row-fluid " id="kt_app_main">
-        <!--begin::Content wrapper-->
+    <div class="app-main flex-column flex-row-fluid mt-4" id="kt_app_main" x-data="dossierSearch()" x-init="init()">
         <div class="d-flex flex-column flex-column-fluid">
-
-            <!--begin::Toolbar-->
-            <div id="kt_app_toolbar" class="app-toolbar  py-3 py-lg-6 ">
-
-                <!--begin::Toolbar container-->
-                <div id="kt_app_toolbar_container" class="app-container  container-xxl d-flex flex-stack ">
-
-
-
-                    <!--begin::Page title-->
-                    <div class="page-title d-flex flex-column justify-content-center flex-wrap me-3 ">
-                        <!--begin::Title-->
-                        <h1 class="page-heading d-flex text-gray-900 fw-bold fs-3 flex-column justify-content-center my-0">
-                            Documents
-                        </h1>
-                        <!--end::Title-->
-
-
-                        <!--begin::Breadcrumb-->
-                        <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1">
-                            <!--begin::Item-->
-                            <li class="breadcrumb-item text-muted">
-                                <a href="/keen/demo1/index.html" class="text-muted text-hover-primary">
-                                    Home </a>
-                            </li>
-                            <!--end::Item-->
-                            <!--begin::Item-->
-                            <li class="breadcrumb-item">
-                                <span class="bullet bg-gray-500 w-5px h-2px"></span>
-                            </li>
-                            <!--end::Item-->
-
-                            <!--begin::Item-->
-                            <li class="breadcrumb-item text-muted">
-                                User Profile </li>
-                            <!--end::Item-->
-
-                        </ul>
-                        <!--end::Breadcrumb-->
-                    </div>
-
-                </div>
-                <!--end::Toolbar container-->
-            </div>
-            <!--end::Toolbar-->
-
-            <!--begin::Content-->
-            <div id="kt_app_content" class="app-content  flex-column-fluid ">
-
-
-                <!--begin::Content container-->
-                <div id="kt_app_content_container" class="app-container  container-xxl ">
-
-                    <!--begin::Navbar-->
-
-
-
+            <div id="kt_app_content" class="app-content flex-column-fluid">
+                <div id="kt_app_content_container" class="app-container container-xxl">
                     <div class="d-flex flex-wrap flex-stack mb-6">
-                        <!--begin::Title-->
                         <h3 class="fw-bold my-2">
-                            My Documents
-                            <span class="fs-6 text-gray-500 fw-semibold ms-1">100+ resources</span>
+                            Dossiers de locations
+                            <span class="fs-6 text-gray-500 fw-semibold ms-1">Electronique</span>
                         </h3>
-                        <!--end::Title-->
-
-                        <!--begin::Controls-->
                         <div class="d-flex my-2">
-                            <!--begin::Search-->
                             <div class="d-flex align-items-center position-relative me-4">
                                 <i class="ki-duotone ki-magnifier fs-3 position-absolute ms-3"><span
-                                        class="path1"></span><span class="path2"></span></i> <input type="text"
-                                    id="kt_filter_search"
-                                    class="form-control form-control-sm border-body bg-body w-150px ps-10"
-                                    placeholder="Rechercher">
+                                        class="path1"></span><span class="path2"></span></i>
+                                <input type="text" class="form-control form-control-sm border-body bg-body w-150px ps-10"
+                                    placeholder="Rechercher" x-model="searchTerm" @input="filterDossiers">
                             </div>
-                            <!--end::Search-->
-
-                            <a href="/keen/demo1/apps/file-manager/files.html" class="btn btn-primary btn-sm">
-                                File Manager
-                            </a>
+                            <button @click="openModal()" class="btn btn-primary btn-sm">
+                                Nouveau Dossier
+                            </button>
                         </div>
-                        <!--end::Controls-->
                     </div>
-                    <!--end::Documents toolbar-->
 
-
-                    <!--begin::Row-->
+                    <!-- Tableau des Dossiers -->
                     <div class="row g-6 g-xl-9 mb-6 mb-xl-9">
-
-
-                        <!--begin::Col-->
-                        <div class="col-md-6 col-lg-4 col-xl-3">
-                            <!--begin::Card-->
-                            <div class="card h-100 ">
-                                <!--begin::Card body-->
-                                <div class="card-body d-flex justify-content-center text-center flex-column p-8">
-                                    <!--begin::Name-->
-                                    <a href="/keen/demo1/apps/file-manager/files.html"
-                                        class="text-gray-800 text-hover-primary d-flex flex-column">
-                                        <!--begin::Image-->
-                                        <div class="symbol symbol-75px mb-5">
-                                            <img src="{{asset('folder-document.svg')}}"
-                                                class="theme-light-show" alt="">
-                                            <img src="/keen/demo1/assets/media/svg/files/folder-document-dark.svg"
-                                                class="theme-dark-show" alt="">
-
+                        <template x-for="dossier in paginatedDossiers" :key="dossier.id">
+                            <div class="col-md-6 col-lg-4 col-xl-3">
+                                <div class="card h-100">
+                                    <div class="card-body d-flex justify-content-center text-center flex-column p-8">
+                                        <!-- Dropdown Menu for Actions -->
+                                        <div class="dropdown position-absolute top-0 end-0 mt-2 me-2">
+                                            <button class="btn btn-sm btn-light dropdown-toggle" type="button"
+                                                id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="ki-duotone ki-dots-vertical fs-4"></i>
+                                            </button>
+                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                <li><a class="dropdown-item" href="#"
+                                                        @click="openModal(dossier)">Modifier</a></li>
+                                                <li><a class="dropdown-item" href="#"
+                                                        @click="deleteDossier(dossier.id)">Supprimer</a></li>
+                                                <li><a class="dropdown-item" href="#"
+                                                        @click="exportDossier(dossier)">Exporter</a></li>
+                                            </ul>
                                         </div>
-                                        <!--end::Image-->
 
-                                        <!--begin::Title-->
-                                        <div class="fs-5 fw-bold mb-2">
-                                            Finance </div>
-                                        <!--end::Title-->
-                                    </a>
-                                    <!--end::Name-->
+                                        <!-- Nom du dossier -->
+                                        <a href="#" class="text-gray-800 text-hover-primary d-flex flex-column">
+                                            <div class="symbol symbol-75px mb-5">
+                                                <img src="{{ asset('folder-document.svg') }}" class="theme-light-show"
+                                                    alt="">
+                                                <img src="/keen/demo1/assets/media/svg/files/folder-document-dark.svg"
+                                                    class="theme-dark-show" alt="">
+                                            </div>
+                                            <div class="fs-5 fw-bold mb-2" x-text="dossier.codedossier"></div>
+                                        </a>
 
-                                    <!--begin::Description-->
-                                    <div class="fs-7 fw-semibold text-gray-500">
-                                        7 files </div>
-                                    <!--end::Description-->
-                                </div>
-                                <!--end::Card body-->
-                            </div>
-                            <!--end::Card-->
-                        </div>
-                        <!--end::Col-->
+                                        <!-- Nombre de documents -->
+                                        <div class="fs-7 fw-semibold text-gray-500"
+                                            x-text="dossier.documents_count + ' fichiers'"></div>
 
-                        <!--begin::Col-->
-                        <div class="col-md-6 col-lg-4 col-xl-3">
-                            <!--begin::Card-->
-                            <div class="card h-100 ">
-                                <!--begin::Card body-->
-                                <div class="card-body d-flex justify-content-center text-center flex-column p-8">
-                                    <!--begin::Name-->
-                                    <a href="/keen/demo1/apps/file-manager/files.html"
-                                        class="text-gray-800 text-hover-primary d-flex flex-column">
-                                        <!--begin::Image-->
-                                        <div class="symbol symbol-75px mb-5">
-                                            <img src="/keen/demo1/assets/media/svg/files/folder-document.svg"
-                                                class="theme-light-show" alt="">
-                                            <img src="/keen/demo1/assets/media/svg/files/folder-document-dark.svg"
-                                                class="theme-dark-show" alt="">
-
+                                        <!-- Ajouter un document -->
+                                        <div class="mt-2">
+                                            <button @click="openAddDocumentModal(dossier)"
+                                                class="btn btn-primary btn-sm">Ajouter un document</button>
                                         </div>
-                                        <!--end::Image-->
-
-                                        <!--begin::Title-->
-                                        <div class="fs-5 fw-bold mb-2">
-                                            Customers </div>
-                                        <!--end::Title-->
-                                    </a>
-                                    <!--end::Name-->
-
-                                    <!--begin::Description-->
-                                    <div class="fs-7 fw-semibold text-gray-500">
-                                        3 files </div>
-                                    <!--end::Description-->
-                                </div>
-                                <!--end::Card body-->
-                            </div>
-                            <!--end::Card-->
-                        </div>
-                        <!--end::Col-->
-
-                        <!--begin::Col-->
-                        <div class="col-md-6 col-lg-4 col-xl-3">
-                            <!--begin::Card-->
-                            <div class="card h-100 ">
-                                <!--begin::Card body-->
-                                <div class="card-body d-flex justify-content-center text-center flex-column p-8">
-                                    <!--begin::Name-->
-                                    <a href="/keen/demo1/apps/file-manager/files.html"
-                                        class="text-gray-800 text-hover-primary d-flex flex-column">
-                                        <!--begin::Image-->
-                                        <div class="symbol symbol-75px mb-5">
-                                            <img src="/keen/demo1/assets/media/svg/files/folder-document.svg"
-                                                class="theme-light-show" alt="">
-                                            <img src="/keen/demo1/assets/media/svg/files/folder-document-dark.svg"
-                                                class="theme-dark-show" alt="">
-
-                                        </div>
-                                        <!--end::Image-->
-
-                                        <!--begin::Title-->
-                                        <div class="fs-5 fw-bold mb-2">
-                                            CRM Project </div>
-                                        <!--end::Title-->
-                                    </a>
-                                    <!--end::Name-->
-
-                                    <!--begin::Description-->
-                                    <div class="fs-7 fw-semibold text-gray-500">
-                                        25 files </div>
-                                    <!--end::Description-->
-                                </div>
-                                <!--end::Card body-->
-                            </div>
-                            <!--end::Card-->
-                        </div>
-                        <!--end::Col-->
-
-
-
-                    </div>
-                    <!--end:Row-->
-
-
-
-                    <!--begin::Row-->
-                    <div class="row g-6 g-xl-9 mb-6 mb-xl-9">
-
-
-                        <!--begin::Col-->
-                        <div class="col-md-6 col-lg-4 col-xl-3">
-                            <!--begin::Card-->
-                            <div class="card h-100 ">
-                                <!--begin::Card body-->
-                                <div class="card-body d-flex justify-content-center text-center flex-column p-8">
-                                    <!--begin::Name-->
-                                    <a href="/keen/demo1/apps/file-manager/files.html"
-                                        class="text-gray-800 text-hover-primary d-flex flex-column">
-                                        <!--begin::Image-->
-                                        <div class="symbol symbol-60px mb-5">
-                                            <img src="/keen/demo1/assets/media/svg/files/pdf.svg" class="theme-light-show"
-                                                alt="">
-                                            <img src="/keen/demo1/assets/media/svg/files/pdf-dark.svg"
-                                                class="theme-dark-show" alt="">
-
-                                        </div>
-                                        <!--end::Image-->
-
-                                        <!--begin::Title-->
-                                        <div class="fs-5 fw-bold mb-2">
-                                            Project Reqs.. </div>
-                                        <!--end::Title-->
-                                    </a>
-                                    <!--end::Name-->
-
-                                    <!--begin::Description-->
-                                    <div class="fs-7 fw-semibold text-gray-500">
-                                        3 days ago </div>
-                                    <!--end::Description-->
-                                </div>
-                                <!--end::Card body-->
-                            </div>
-                            <!--end::Card-->
-                        </div>
-                        <!--end::Col-->
-
-                        <!--begin::Col-->
-                        <div class="col-md-6 col-lg-4 col-xl-3">
-                            <!--begin::Card-->
-                            <div class="card h-100 ">
-                                <!--begin::Card body-->
-                                <div class="card-body d-flex justify-content-center text-center flex-column p-8">
-                                    <!--begin::Name-->
-                                    <a href="/keen/demo1/apps/file-manager/files.html"
-                                        class="text-gray-800 text-hover-primary d-flex flex-column">
-                                        <!--begin::Image-->
-                                        <div class="symbol symbol-60px mb-5">
-                                            <img src="/keen/demo1/assets/media/svg/files/doc.svg" class="theme-light-show"
-                                                alt="">
-                                            <img src="/keen/demo1/assets/media/svg/files/doc-dark.svg"
-                                                class="theme-dark-show" alt="">
-
-                                        </div>
-                                        <!--end::Image-->
-
-                                        <!--begin::Title-->
-                                        <div class="fs-5 fw-bold mb-2">
-                                            CRM App Docs.. </div>
-                                        <!--end::Title-->
-                                    </a>
-                                    <!--end::Name-->
-
-                                    <!--begin::Description-->
-                                    <div class="fs-7 fw-semibold text-gray-500">
-                                        3 days ago </div>
-                                    <!--end::Description-->
-                                </div>
-                                <!--end::Card body-->
-                            </div>
-                            <!--end::Card-->
-                        </div>
-                        <!--end::Col-->
-
-                        <!--begin::Col-->
-                        <div class="col-md-6 col-lg-4 col-xl-3">
-                            <!--begin::Card-->
-                            <div class="card h-100 ">
-                                <!--begin::Card body-->
-                                <div class="card-body d-flex justify-content-center text-center flex-column p-8">
-                                    <!--begin::Name-->
-                                    <a href="/keen/demo1/apps/file-manager/files.html"
-                                        class="text-gray-800 text-hover-primary d-flex flex-column">
-                                        <!--begin::Image-->
-                                        <div class="symbol symbol-60px mb-5">
-                                            <img src="/keen/demo1/assets/media/svg/files/css.svg" class="theme-light-show"
-                                                alt="">
-                                            <img src="/keen/demo1/assets/media/svg/files/css-dark.svg"
-                                                class="theme-dark-show" alt="">
-
-                                        </div>
-                                        <!--end::Image-->
-
-                                        <!--begin::Title-->
-                                        <div class="fs-5 fw-bold mb-2">
-                                            User CRUD Styles </div>
-                                        <!--end::Title-->
-                                    </a>
-                                    <!--end::Name-->
-
-                                    <!--begin::Description-->
-                                    <div class="fs-7 fw-semibold text-gray-500">
-                                        4 days ago </div>
-                                    <!--end::Description-->
-                                </div>
-                                <!--end::Card body-->
-                            </div>
-                            <!--end::Card-->
-                        </div>
-                        <!--end::Col-->
-
-                        <!--begin::Col-->
-                        <div class="col-md-6 col-lg-4 col-xl-3">
-                            <!--begin::Card-->
-                            <div class="card h-100 ">
-                                <!--begin::Card body-->
-                                <div class="card-body d-flex justify-content-center text-center flex-column p-8">
-                                    <!--begin::Name-->
-                                    <a href="/keen/demo1/apps/file-manager/files.html"
-                                        class="text-gray-800 text-hover-primary d-flex flex-column">
-                                        <!--begin::Image-->
-                                        <div class="symbol symbol-60px mb-5">
-                                            <img src="/keen/demo1/assets/media/svg/files/ai.svg" class="theme-light-show"
-                                                alt="">
-                                            <img src="/keen/demo1/assets/media/svg/files/ai-dark.svg"
-                                                class="theme-dark-show" alt="">
-
-                                        </div>
-                                        <!--end::Image-->
-
-                                        <!--begin::Title-->
-                                        <div class="fs-5 fw-bold mb-2">
-                                            Product Logo </div>
-                                        <!--end::Title-->
-                                    </a>
-                                    <!--end::Name-->
-
-                                    <!--begin::Description-->
-                                    <div class="fs-7 fw-semibold text-gray-500">
-                                        5 days ago </div>
-                                    <!--end::Description-->
-                                </div>
-                                <!--end::Card body-->
-                            </div>
-                            <!--end::Card-->
-                        </div>
-                        <!--end::Col-->
-
-
-
-                        <!--begin::Col-->
-                        <div class="col-md-6 col-lg-4 col-xl-3">
-                            <!--begin::Card-->
-                            <div class="card h-100 ">
-                                <!--begin::Card body-->
-                                <div class="card-body d-flex justify-content-center text-center flex-column p-8">
-                                    <!--begin::Name-->
-                                    <a href="/keen/demo1/apps/file-manager/files.html"
-                                        class="text-gray-800 text-hover-primary d-flex flex-column">
-                                        <!--begin::Image-->
-                                        <div class="symbol symbol-60px mb-5">
-                                            <img src="/keen/demo1/assets/media/svg/files/sql.svg" class="theme-light-show"
-                                                alt="">
-                                            <img src="/keen/demo1/assets/media/svg/files/sql-dark.svg"
-                                                class="theme-dark-show" alt="">
-
-                                        </div>
-                                        <!--end::Image-->
-
-                                        <!--begin::Title-->
-                                        <div class="fs-5 fw-bold mb-2">
-                                            Orders backup </div>
-                                        <!--end::Title-->
-                                    </a>
-                                    <!--end::Name-->
-
-                                    <!--begin::Description-->
-                                    <div class="fs-7 fw-semibold text-gray-500">
-                                        1 week ago </div>
-                                    <!--end::Description-->
-                                </div>
-                                <!--end::Card body-->
-                            </div>
-                            <!--end::Card-->
-                        </div>
-                        <!--end::Col-->
-
-                        <!--begin::Col-->
-                        <div class="col-md-6 col-lg-4 col-xl-3">
-                            <!--begin::Card-->
-                            <div class="card h-100 ">
-                                <!--begin::Card body-->
-                                <div class="card-body d-flex justify-content-center text-center flex-column p-8">
-                                    <!--begin::Name-->
-                                    <a href="/keen/demo1/apps/file-manager/files.html"
-                                        class="text-gray-800 text-hover-primary d-flex flex-column">
-                                        <!--begin::Image-->
-                                        <div class="symbol symbol-60px mb-5">
-                                            <img src="/keen/demo1/assets/media/svg/files/xml.svg" class="theme-light-show"
-                                                alt="">
-                                            <img src="/keen/demo1/assets/media/svg/files/xml-dark.svg"
-                                                class="theme-dark-show" alt="">
-
-                                        </div>
-                                        <!--end::Image-->
-
-                                        <!--begin::Title-->
-                                        <div class="fs-5 fw-bold mb-2">
-                                            UTAIR CRM API Co.. </div>
-                                        <!--end::Title-->
-                                    </a>
-                                    <!--end::Name-->
-
-                                    <!--begin::Description-->
-                                    <div class="fs-7 fw-semibold text-gray-500">
-                                        2 weeks ago </div>
-                                    <!--end::Description-->
-                                </div>
-                                <!--end::Card body-->
-                            </div>
-                            <!--end::Card-->
-                        </div>
-                        <!--end::Col-->
-
-                        <!--begin::Col-->
-                        <div class="col-md-6 col-lg-4 col-xl-3">
-                            <!--begin::Card-->
-                            <div class="card h-100 ">
-                                <!--begin::Card body-->
-                                <div class="card-body d-flex justify-content-center text-center flex-column p-8">
-                                    <!--begin::Name-->
-                                    <a href="/keen/demo1/apps/file-manager/files.html"
-                                        class="text-gray-800 text-hover-primary d-flex flex-column">
-                                        <!--begin::Image-->
-                                        <div class="symbol symbol-60px mb-5">
-                                            <img src="/keen/demo1/assets/media/svg/files/tif.svg" class="theme-light-show"
-                                                alt="">
-                                            <img src="/keen/demo1/assets/media/svg/files/tif-dark.svg"
-                                                class="theme-dark-show" alt="">
-
-                                        </div>
-                                        <!--end::Image-->
-
-                                        <!--begin::Title-->
-                                        <div class="fs-5 fw-bold mb-2">
-                                            Tower Hill App.. </div>
-                                        <!--end::Title-->
-                                    </a>
-                                    <!--end::Name-->
-
-                                    <!--begin::Description-->
-                                    <div class="fs-7 fw-semibold text-gray-500">
-                                        3 weeks ago </div>
-                                    <!--end::Description-->
-                                </div>
-                                <!--end::Card body-->
-                            </div>
-                            <!--end::Card-->
-                        </div>
-                        <!--end::Col-->
-
-
-
-                    </div>
-                    <!--end:Row-->
-
-
-                    <!--begin::Modals-->
-                    <!--begin::Modal - Offer A Deal-->
-                    <div class="modal fade" id="kt_modal_offer_a_deal" tabindex="-1" aria-hidden="true">
-                        <!--begin::Modal dialog-->
-                        <div class="modal-dialog modal-dialog-centered mw-1000px">
-                            <!--begin::Modal content-->
-                            <div class="modal-content">
-                                <!--begin::Modal header-->
-                                <div class="modal-header py-7 d-flex justify-content-between">
-                                    <!--begin::Modal title-->
-                                    <h2>Offer a Deal</h2>
-                                    <!--end::Modal title-->
-
-                                    <!--begin::Close-->
-                                    <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
-                                        <i class="ki-duotone ki-cross fs-1"><span class="path1"></span><span
-                                                class="path2"></span></i>
                                     </div>
-                                    <!--end::Close-->
                                 </div>
-                                <!--begin::Modal header-->
-
-                                <!--begin::Modal body-->
-                                <div class="modal-body scroll-y m-5">
-                                    <!--begin::Stepper-->
-                                    <div class="stepper stepper-links d-flex flex-column"
-                                        id="kt_modal_offer_a_deal_stepper">
-                                        <!--begin::Nav-->
-                                        <div class="stepper-nav justify-content-center py-2">
-                                            <!--begin::Step 1-->
-                                            <div class="stepper-item me-5 me-md-15 current" data-kt-stepper-element="nav">
-                                                <h3 class="stepper-title">
-                                                    Deal Type
-                                                </h3>
-                                            </div>
-                                            <!--end::Step 1-->
-
-                                            <!--begin::Step 2-->
-                                            <div class="stepper-item me-5 me-md-15" data-kt-stepper-element="nav">
-                                                <h3 class="stepper-title">
-                                                    Deal Details
-                                                </h3>
-                                            </div>
-                                            <!--end::Step 2-->
-
-                                            <!--begin::Step 3-->
-                                            <div class="stepper-item me-5 me-md-15" data-kt-stepper-element="nav">
-                                                <h3 class="stepper-title">
-                                                    Finance Settings
-                                                </h3>
-                                            </div>
-                                            <!--end::Step 3-->
-
-                                            <!--begin::Step 4-->
-                                            <div class="stepper-item" data-kt-stepper-element="nav">
-                                                <h3 class="stepper-title">
-                                                    Completed
-                                                </h3>
-                                            </div>
-                                            <!--end::Step 4-->
-                                        </div>
-                                        <!--end::Nav-->
-
-
-                                    </div>
-                                    <!--end::Stepper-->
-                                </div>
-                                <!--begin::Modal body-->
                             </div>
-                        </div>
+                        </template>
                     </div>
-                    <!--end::Modal - Offer A Deal--><!--end::Modals-->
+
+                    <!-- Pagination -->
+                    <div class="d-flex justify-content-center">
+                        <button @click="goToPage(currentPage - 1)" :disabled="currentPage === 1"
+                            class="btn btn-light btn-sm">Précédent</button>
+                        <button @click="goToPage(currentPage + 1)" :disabled="currentPage === totalPages"
+                            class="btn btn-light btn-sm">Suivant</button>
+                    </div>
                 </div>
-                <!--end::Content container-->
             </div>
-            <!--end::Content-->
-
         </div>
-        <!--end::Content wrapper-->
+
+        <!-- Modal Modifier Dossier -->
+        <template x-if="showModal">
+            <div class="modal fade show d-block" tabindex="-1" aria-modal="true" style="background-color: rgba(0,0,0,0.5)">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" x-text="isEditModal ? 'Modifier le Dossier' : 'Créer un Dossier'"></h5>
+                            <button type="button" class="btn-close" @click="hideModal()"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form @submit.prevent="submitForm">
+                                <div class="mb-3">
+                                    <label for="locataire_id" class="form-label">Choisir le locataire</label>
+                                    <select id="locataire_id" class="form-select" x-model="formData.locataire_id" required>
+                                        <option value="">Choisir un locataire</option>
+                                        @foreach ($locataires as $locataire)
+                                            <option value="{{ $locataire->id }}">
+                                                {{ $locataire->nom }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <button type="submit" class="btn btn-primary"
+                                    x-text="isEditModal ? 'Mettre à jour' : 'Enregistrer'"></button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- Modal Ajouter un Document -->
+        <template x-if="showAddDocumentModal">
+            <div class="modal fade show d-block" tabindex="-1" aria-modal="true" style="background-color: rgba(0,0,0,0.5)">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Ajouter un Document</h5>
+                            <button type="button" class="btn-close" @click="hideAddDocumentModal()"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form @submit.prevent="addDocument">
+                                <div class="mb-3">
+                                    <label for="document" class="form-label">Choisir un fichier</label>
+                                    <!-- Assurez-vous que vous utilisez multiple pour permettre la sélection de plusieurs fichiers -->
+                                    <input type="file" id="documents" class="form-control" @change="handleFileChange"
+                                        multiple required />
 
 
-     
+                                </div>
+                                <button type="submit" class="btn btn-primary">Ajouter</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+
     </div>
 
     <script>
-        function contratSearch() {
+        function dossierSearch() {
             return {
                 searchTerm: '',
+                dossiers: @json($listedossiers),
+                filteredDossiers: [],
+                showModal: false,
+                showAddDocumentModal: false,
+                isEditModal: false,
+                formData: {
+                    locataire_id: '',
+                },
+                documents: [],
+                currentDossier: null,
+                currentPage: 1,
+                dossiersPerPage: 10,
+                totalPages: 0,
+
+                hideModal() {
+                    this.showModal = false;
+                    this.resetForm();
+                    this.isEditModal = false;
+                    this.currentDossier = null;
+                },
+
+                hideAddDocumentModal() {
+                    this.showAddDocumentModal = false;
+                },
+
+                handleFileChange(event) {
+                    // Récupérer les fichiers sélectionnés
+                    this.documents = Array.from(event.target.files); // Convertir FileList en tableau
+                },
+
+
+                openModal(dossier = null) {
+                    this.isEditModal = dossier !== null;
+                    if (this.isEditModal) {
+                        this.currentDossier = {
+                            ...dossier
+                        };
+                        this.formData.locataire_id = this.currentDossier.locataire_id;
+                    } else {
+                        this.resetForm();
+                    }
+                    this.showModal = true;
+                },
+
+                openAddDocumentModal(dossier) {
+                    this.currentDossier = dossier;
+                    this.showAddDocumentModal = true;
+                },
+
+                resetForm() {
+                    this.formData = {
+                        locataire_id: ''
+                    };
+                },
+
+                async submitForm() {
+                    this.isLoading = true;
+
+                    if (!this.formData.locataire_id || this.formData.locataire_id.trim() === '') {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Le nom du locataire est requis.',
+                            showConfirmButton: true
+                        });
+                        this.isLoading = false;
+                        return;
+                    }
+
+                    const formData = new FormData();
+                    formData.append('locataire_id', this.formData.locataire_id);
+                    formData.append('dossier_id', this.currentDossier ? this.currentDossier.id : null);
+
+                    try {
+                        const response = await fetch('{{ route('dossiers.store') }}', {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            },
+                            body: formData,
+                        });
+
+                        if (response.ok) {
+                            const data = await response.json();
+                            const dossier = data.dossier;
+
+                            if (dossier) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Dossier enregistré avec succès !',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                });
+
+                                if (this.isEdite) {
+                                    const index = this.dossiers.findIndex(d => d.id === dossier.id);
+                                    if (index !== -1) {
+                                        this.dossiers[index] = dossier;
+                                    }
+                                } else {
+                                    this.dossiers.push(dossier);
+                                    this.dossiers.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+                                }
+
+                                this.filterDossiers();
+                                this.resetForm();
+                                this.hideModal();
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Dossier non valide.',
+                                    showConfirmButton: true
+                                });
+                            }
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Erreur lors de l\'enregistrement.',
+                                showConfirmButton: true
+                            });
+                        }
+                    } catch (error) {
+                        console.error('Erreur réseau :', error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Une erreur est survenue.',
+                            showConfirmButton: true
+                        });
+                    } finally {
+                        this.isLoading = false;
+                    }
+                },
+
+
+                async addDocument() {
+                    // Vérifier que des fichiers ont été sélectionnés
+                    if (this.documents.length === 0) {
+                        alert("Veuillez sélectionner des documents à ajouter.");
+                        return;
+                    }
+
+                    const formData = new FormData();
+
+                    // Ajouter chaque fichier sélectionné à formData
+                    this.documents.forEach(file => formData.append('documents[]', file));
+
+                    // Ajouter l'ID du dossier
+                    formData.append('dossier_id', this.currentDossier.id);
+
+                    try {
+                        // Effectuer la requête POST pour envoyer les fichiers
+                        const response = await fetch('{{ route('documents.store') }}', {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}', // Assurez-vous que le token CSRF est inclus
+                            },
+                            body: formData,
+                        });
+
+                        if (response.ok) {
+                            alert("Documents ajoutés avec succès.");
+
+                            Swal.fire({
+                                icon: "success",
+                                title: response.message,
+                                showConfirmButton: false,
+                                timer: 1500,
+                            });
+                            this.hideAddDocumentModal();
+                            this.filterDossiers();
+                            alert('tese');
+                        } else {
+                            alert("Erreur lors de l'ajout des documents.");
+                        }
+                    } catch (error) {
+                        console.error('Error adding documents:', error);
+                    }
+                },
+
+
+
+                get paginatedDossiers() {
+                    let start = (this.currentPage - 1) * this.dossiersPerPage;
+                    let end = start + this.dossiersPerPage;
+                    return this.filteredDossiers.slice(start, end);
+                },
+
+                filterDossiers() {
+                    const term = this.searchTerm.toLowerCase();
+                    this.filteredDossiers = this.dossiers.filter(dossier => {
+                        return dossier.codedossier && dossier.codedossier.toLowerCase().includes(term);
+                    });
+                    this.totalPages = Math.ceil(this.filteredDossiers.length / this.dossiersPerPage);
+                    this.currentPage = 1;
+                },
+
+                goToPage(page) {
+                    if (page < 1 || page > this.totalPages) return;
+                    this.currentPage = page;
+                },
+
                 init() {
-                    this.filterContrats();
-                    this.isLoading = false;
+                    this.filterDossiers();
                 }
             };
         }

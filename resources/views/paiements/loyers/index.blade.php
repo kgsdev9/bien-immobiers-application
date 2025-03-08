@@ -65,7 +65,7 @@
                                             <tr class="text-start text-muted fw-bold fs-7 text-uppercase gs-0">
                                                 <th class="min-w-125px">Contrat ID</th>
                                                 <th class="min-w-125px">Mois Payé</th>
-                                                <th class="min-w-125px">Montant</th>
+                                                <th class="min-w-125px">Montant (CFA)</th>
                                                 <th class="min-w-125px">Date de Paiement</th>
                                                 <th class="min-w-125px">Mode de Paiement</th>
                                                 <th class="min-w-125px">Référence Paiement</th>
@@ -85,7 +85,7 @@
                                                     <!-- Assurez-vous que le champ est bien 'nom' ou modifiez-le en fonction de votre base de données -->
 
                                                     <!-- Affichage du montant -->
-                                                    <td x-text="paiement.montant"></td>
+                                                    <td x-text="formatMontant(paiement.montant)"></td>
 
                                                     <!-- Affichage de la date de paiement -->
                                                     <td x-text="paiement.date_paiement"></td>
@@ -215,13 +215,6 @@
                                             x-model="formData.bien_nom" disabled>
                                     </div>
 
-                                    <!-- Adresse -->
-                                    <div class="col-md-6 mb-3">
-                                        <label for="commune" class="form-label">Commune Du bien </label>
-                                        <input type="text" id="commune" class="form-control"
-                                            x-model="formData.commune" disabled readonly>
-                                    </div>
-
                                     <div class="col-md-6 mb-3">
                                         <label for="commune" class="form-label">Commune Du bien </label>
                                         <input type="text" id="commune" class="form-control"
@@ -313,6 +306,21 @@
                 searchQuery: '',
                 currentPaiement: null,
 
+
+                // Fonction pour formater les montants avec des séparateurs de milliers
+                formatMontant(montant) {
+                    // Vérifier si le montant est valide
+                    if (isNaN(montant)) return montant;
+
+                    // Convertir le montant en nombre et utiliser `toLocaleString` pour le formater
+                    return parseFloat(montant).toLocaleString('fr-FR', {
+                        style: 'decimal',
+                        minimumFractionDigits: 0, // Pour afficher toujours deux décimales (ex. 1 000,00)
+                        maximumFractionDigits: 0, // Limiter à deux décimales
+                    });
+                },
+
+
                 hideModal() {
                     this.showModal = false;
                     this.currentPaiement = null;
@@ -362,13 +370,30 @@
                         this.currentPaiement = {
                             ...paiement
                         };
+                        // Mise à jour des données du formulaire
                         this.formData = {
                             contrat_id: this.currentPaiement.contrat_id,
-                            mois_paye: this.currentPaiement.mois_paye,
+                            mois_id: this.currentPaiement
+                                .mois_id, // Utilisation de mois_id pour s'assurer que c'est le bon mois
                             montant: this.currentPaiement.montant,
                             date_paiement: this.currentPaiement.date_paiement,
-                            mode_paiement: this.currentPaiement.mode_paiement,
-                            reference_paiement: this.currentPaiement.reference_paiement
+                            modereglement_id: this.currentPaiement.modereglement_id,
+                            reference_paiement: this.currentPaiement.reference_paiement,
+                            // Ajouter des informations supplémentaires comme le locataire, bien, etc.
+                            locataire_nom: this.currentPaiement.contrat.locataire.nom,
+                            bien_nom: this.currentPaiement.contrat.bien.nom,
+                            //     .nom, // Assurez-vous que `contrat` contient la relation avec `bien`
+                            prixloyer: this.currentPaiement.contrat
+                                .montant_loyer, // Assurez-vous que `contrat` contient la propriété `loyer`
+                            commune: this.currentPaiement.contrat.bien
+                                .commune.nom, // Assurez-vous que `contrat` contient la propriété `commune`
+                        };
+
+                        this.selectedLocataire = {
+                            id: this.currentPaiement.contrat.locataire.id,
+                            nom: this.currentPaiement.contrat.locataire.nom,
+                            email: this.currentPaiement.contrat.locataire.email,
+                            avatar: this.currentPaiement.contrat.locataire.avatar, // Si disponible
                         };
                     } else {
                         this.resetForm();
@@ -377,14 +402,26 @@
                     this.showModal = true;
                 },
 
+
                 resetForm() {
                     this.formData = {
                         contrat_id: '',
-                        mois_paye: '',
+                        mois_id: '',
                         montant: '',
                         date_paiement: '',
-                        mode_paiement: '',
-                        reference_paiement: ''
+                        modereglement_id: '',
+                        reference_paiement: '',
+                        locataire_nom: '',
+                        bien_nom: '',
+                        prixloyer: '',
+                        commune: '',
+                    };
+
+                    this.selectedLocataire = {
+                        id: '',
+                        nom: '',
+                        email: '',
+                        // avatar: 'https://via.placeholder.com/40'
                     };
                 },
 
@@ -464,7 +501,8 @@
                                 this.resetForm();
                                 this.hideModal();
                             }
-                        } else {
+                        } else
+                        {
                             // Si le paiement existe déjà
                             const data = await response.json();
                             if (data.paiement_existe) {

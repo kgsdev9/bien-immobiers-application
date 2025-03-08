@@ -1,26 +1,11 @@
-<?php
+namespace App\Http\Controllers;
 
-namespace App\Http\Controllers\GestionDossiers;
-
-use App\Http\Controllers\Controller;
 use App\Models\Dossier;
 use App\Models\Locataire;
 use Illuminate\Http\Request;
 
 class DossierController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        $listedossiers = Dossier::withCount('documents')->get();
-        $locataires  = Locataire::all();
-        return view('dossiers.index', compact('listedossiers', 'locataires'));
-    }
-
     public function store(Request $request)
     {
         // Vérifier si dossier_id existe dans la requête
@@ -69,7 +54,7 @@ class DossierController extends Controller
         }
 
         // Génération du codedossier basé sur le nom du locataire
-        $codedossier = $this->generateCodedossier($locataire->nom);
+        $codedossier = $this->generateCodedossier($locataire->name);
 
         // Création d'un nouveau dossier
         $dossier = Dossier::create([

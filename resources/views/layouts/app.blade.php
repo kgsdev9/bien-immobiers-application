@@ -25,13 +25,13 @@
 
 </head>
 
-<body id="kt_app_body" data-kt-app-layout="light-sidebar" data-kt-app-header-fixed="true"
+<body id="kt_app_body" data-kt-app-layout="dark-sidebar" data-kt-app-header-fixed="true"
     data-kt-app-sidebar-enabled="true" data-kt-app-sidebar-fixed="true" data-kt-app-sidebar-hoverable="true"
     data-kt-app-sidebar-push-header="true" data-kt-app-sidebar-push-toolbar="true"
     data-kt-app-sidebar-push-footer="true" data-kt-app-toolbar-enabled="true" class="app-default">
     <!--begin::Theme mode setup on page load-->
     <script>
-        var defaultThemeMode = "light";
+        var defaultThemeMode = "dark";
         var themeMode;
         if (document.documentElement) {
             if (document.documentElement.hasAttribute("data-bs-theme-mode")) {
@@ -115,19 +115,7 @@
                                     </span>
 
                                 </a>
-                                <!--end:Menu item-->
-                                <!--begin:Menu item-->
-                                <a href="{{ route('vente.rapport') }}"
-                                    class="menu-item menu-lg-down-accordion me-0 me-lg-2">
-                                    <!--begin:Menu link-->
-                                    <span class="menu-link">
-                                        <span class="menu-title">Quittance</span>
-                                        <span class=" d-lg-none"></span>
-                                    </span>
 
-                                </a>
-                                <!--end:Menu item-->
-                                <!--begin:Menu item-->
                                 <a href="{{ route('facturepersonnalite.index') }}" class="menu-item  me-0 me-lg-2">
                                     <!--begin:Menu link-->
                                     <span class="menu-link">
@@ -147,7 +135,7 @@
 
                                 </a>
 
-                                <a href="{{ route('gestiondossiers.index') }}"
+                                <a href="{{ route('dossiers.index') }}"
                                     class="menu-item menu-lg-down-accordion menu-sub-lg-down-indention me-0 me-lg-2">
                                     <!--begin:Menu link-->
                                     <span class="menu-link">
@@ -546,63 +534,23 @@
                                     </div>
                                 </div>
 
-                                <a href="{{ route('biens.index') }}" class="menu-item menu-accordion">
-                                    <span class="menu-link">
-                                        <span class="menu-icon">
-                                            <span class="svg-icon svg-icon-2">
-                                                <svg width="24" height="24" viewBox="0 0 24 24"
-                                                    fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path
-                                                        d="M20 14H18V10H20C20.6 10 21 10.4 21 11V13C21 13.6 20.6 14 20 14ZM21 19V17C21 16.4 20.6 16 20 16H18V20H20C20.6 20 21 19.6 21 19ZM21 7V5C21 4.4 20.6 4 20 4H18V8H20C20.6 8 21 7.6 21 7Z"
-                                                        fill="currentColor" />
-                                                    <path opacity="0.3"
-                                                        d="M17 22H3C2.4 22 2 21.6 2 21V3C2 2.4 2.4 2 3 2H17C17.6 2 18 2.4 18 3V21C18 21.6 17.6 22 17 22ZM10 7C8.9 7 8 7.9 8 9C8 10.1 8.9 11 10 11C11.1 11 12 10.1 12 9C12 7.9 11.1 7 10 7ZM13.3 16C14 16 14.5 15.3 14.3 14.7C13.7 13.2 12 12 10.1 12C8.10001 12 6.49999 13.1 5.89999 14.7C5.59999 15.3 6.19999 16 7.39999 16H13.3Z"
-                                                        fill="currentColor" />
-                                                </svg>
-                                            </span>
-
-                                        </span>
-                                        <span class="menu-title">Mes Biens</span>
-                                    </span>
-                                </a>
-
-
-
-                                <a href="{{ route('clients.index') }}" class="menu-item menu-accordion">
-                                    <span class="menu-link">
-                                        <span class="menu-icon">
-                                            <span class="svg-icon svg-icon-2">
-                                                <svg width="24" height="24" viewBox="0 0 24 24"
-                                                    fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path
-                                                        d="M20 14H18V10H20C20.6 10 21 10.4 21 11V13C21 13.6 20.6 14 20 14ZM21 19V17C21 16.4 20.6 16 20 16H18V20H20C20.6 20 21 19.6 21 19ZM21 7V5C21 4.4 20.6 4 20 4H18V8H20C20.6 8 21 7.6 21 7Z"
-                                                        fill="currentColor" />
-                                                    <path opacity="0.3"
-                                                        d="M17 22H3C2.4 22 2 21.6 2 21V3C2 2.4 2.4 2 3 2H17C17.6 2 18 2.4 18 3V21C18 21.6 17.6 22 17 22ZM10 7C8.9 7 8 7.9 8 9C8 10.1 8.9 11 10 11C11.1 11 12 10.1 12 9C12 7.9 11.1 7 10 7ZM13.3 16C14 16 14.5 15.3 14.3 14.7C13.7 13.2 12 12 10.1 12C8.10001 12 6.49999 13.1 5.89999 14.7C5.59999 15.3 6.19999 16 7.39999 16H13.3Z"
-                                                        fill="currentColor" />
-                                                </svg>
-                                            </span>
-
-                                        </span>
-                                        <span class="menu-title">Clients</span>
-                                    </span>
-                                </a>
-
                                 <a href="{{ route('typebiens.index') }}" class="menu-item menu-accordion">
                                     <span class="menu-link">
                                         <span class="menu-icon">
                                             <span class="svg-icon svg-icon-2">
                                                 <svg width="24" height="24" viewBox="0 0 24 24"
                                                     fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <!-- Représentation d'un immeuble -->
                                                     <path
-                                                        d="M20 14H18V10H20C20.6 10 21 10.4 21 11V13C21 13.6 20.6 14 20 14ZM21 19V17C21 16.4 20.6 16 20 16H18V20H20C20.6 20 21 19.6 21 19ZM21 7V5C21 4.4 20.6 4 20 4H18V8H20C20.6 8 21 7.6 21 7Z"
+                                                        d="M20 3H4C3.4 3 3 3.4 3 4V20C3 20.6 3.4 21 4 21H20C20.6 21 21 20.6 21 20V4C21 3.4 20.6 3 20 3ZM19 19H5V5H19V19Z"
+                                                        fill="currentColor" />
+                                                    <path opacity="0.3" d="M7 8H9V10H7ZM11 8H13V10H11ZM15 8H17V10H15Z"
                                                         fill="currentColor" />
                                                     <path opacity="0.3"
-                                                        d="M17 22H3C2.4 22 2 21.6 2 21V3C2 2.4 2.4 2 3 2H17C17.6 2 18 2.4 18 3V21C18 21.6 17.6 22 17 22ZM10 7C8.9 7 8 7.9 8 9C8 10.1 8.9 11 10 11C11.1 11 12 10.1 12 9C12 7.9 11.1 7 10 7ZM13.3 16C14 16 14.5 15.3 14.3 14.7C13.7 13.2 12 12 10.1 12C8.10001 12 6.49999 13.1 5.89999 14.7C5.59999 15.3 6.19999 16 7.39999 16H13.3Z"
+                                                        d="M7 12H9V14H7ZM11 12H13V14H11ZM15 12H17V14H15Z"
                                                         fill="currentColor" />
                                                 </svg>
                                             </span>
-
                                         </span>
                                         <span class="menu-title">Type de bien</span>
                                     </span>
@@ -615,17 +563,66 @@
                                             <span class="svg-icon svg-icon-2">
                                                 <svg width="24" height="24" viewBox="0 0 24 24"
                                                     fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path
-                                                        d="M20 14H18V10H20C20.6 10 21 10.4 21 11V13C21 13.6 20.6 14 20 14ZM21 19V17C21 16.4 20.6 16 20 16H18V20H20C20.6 20 21 19.6 21 19ZM21 7V5C21 4.4 20.6 4 20 4H18V8H20C20.6 8 21 7.6 21 7Z"
+                                                    <!-- Représentation d'un bâtiment administratif (mairie) -->
+                                                    <path d="M12 3L2 10H4V20H10V14H14V20H20V10H22L12 3Z"
                                                         fill="currentColor" />
-                                                    <path opacity="0.3"
-                                                        d="M17 22H3C2.4 22 2 21.6 2 21V3C2 2.4 2.4 2 3 2H17C17.6 2 18 2.4 18 3V21C18 21.6 17.6 22 17 22ZM10 7C8.9 7 8 7.9 8 9C8 10.1 8.9 11 10 11C11.1 11 12 10.1 12 9C12 7.9 11.1 7 10 7ZM13.3 16C14 16 14.5 15.3 14.3 14.7C13.7 13.2 12 12 10.1 12C8.10001 12 6.49999 13.1 5.89999 14.7C5.59999 15.3 6.19999 16 7.39999 16H13.3Z"
+                                                    <path opacity="0.3" d="M4 10V20H10V14H14V20H20V10H4Z"
                                                         fill="currentColor" />
                                                 </svg>
                                             </span>
-
                                         </span>
                                         <span class="menu-title">Communes</span>
+                                    </span>
+                                </a>
+
+
+                                <a href="{{ route('biens.index') }}" class="menu-item menu-accordion">
+                                    <span class="menu-link">
+                                        <span class="menu-icon">
+                                            <span class="svg-icon svg-icon-2">
+                                                <svg width="24" height="24" viewBox="0 0 24 24"
+                                                    fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <!-- Toit de la maison -->
+                                                    <path d="M12 3L2 12h3v8h4v-5h6v5h4v-8h3L12 3z"
+                                                        fill="currentColor" />
+                                                    <!-- Corps de la maison -->
+                                                    <rect x="7" y="12" width="10" height="8"
+                                                        fill="currentColor" />
+                                                    <!-- Fenêtres et porte -->
+                                                    <rect x="9" y="14" width="2" height="2"
+                                                        fill="white" />
+                                                    <rect x="13" y="14" width="2" height="2"
+                                                        fill="white" />
+                                                    <rect x="11" y="16" width="2" height="4"
+                                                        fill="white" />
+                                                </svg>
+                                            </span>
+                                        </span>
+                                        <span class="menu-title">Mes Biens</span>
+                                    </span>
+                                </a>
+
+
+
+
+                                <a href="{{ route('clients.index') }}" class="menu-item menu-accordion">
+                                    <span class="menu-link">
+                                        <span class="menu-icon">
+                                            <span class="svg-icon svg-icon-2">
+                                                <svg width="24" height="24" viewBox="0 0 24 24"
+                                                    fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <!-- Silhouette du locataire -->
+                                                    <circle cx="12" cy="7" r="4"
+                                                        fill="currentColor" />
+                                                    <path d="M12 11C9.8 11 8 12.8 8 15V18H16V15C16 12.8 14.2 11 12 11Z"
+                                                        fill="currentColor" />
+                                                    <path
+                                                        d="M8 15H6C6 16.1 6.9 17 8 17V15ZM16 15H14C14 16.1 14.9 17 16 17V15Z"
+                                                        fill="currentColor" />
+                                                </svg>
+                                            </span>
+                                        </span>
+                                        <span class="menu-title">Locataires</span>
                                     </span>
                                 </a>
 
@@ -635,15 +632,12 @@
                                             <span class="svg-icon svg-icon-2">
                                                 <svg width="24" height="24" viewBox="0 0 24 24"
                                                     fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <!-- Représentation d'un contrat ou d'un document signé -->
                                                     <path
-                                                        d="M20 14H18V10H20C20.6 10 21 10.4 21 11V13C21 13.6 20.6 14 20 14ZM21 19V17C21 16.4 20.6 16 20 16H18V20H20C20.6 20 21 19.6 21 19ZM21 7V5C21 4.4 20.6 4 20 4H18V8H20C20.6 8 21 7.6 21 7Z"
-                                                        fill="currentColor" />
-                                                    <path opacity="0.3"
-                                                        d="M17 22H3C2.4 22 2 21.6 2 21V3C2 2.4 2.4 2 3 2H17C17.6 2 18 2.4 18 3V21C18 21.6 17.6 22 17 22ZM10 7C8.9 7 8 7.9 8 9C8 10.1 8.9 11 10 11C11.1 11 12 10.1 12 9C12 7.9 11.1 7 10 7ZM13.3 16C14 16 14.5 15.3 14.3 14.7C13.7 13.2 12 12 10.1 12C8.10001 12 6.49999 13.1 5.89999 14.7C5.59999 15.3 6.19999 16 7.39999 16H13.3Z"
+                                                        d="M17 2H7C5.9 2 5 2.9 5 4V20C5 21.1 5.9 22 7 22H17C18.1 22 19 21.1 19 20V4C19 2.9 18.1 2 17 2ZM17 20H7V4H17V20ZM9 6H15V8H9V6ZM9 10H15V12H9V10ZM9 14H15V16H9V14Z"
                                                         fill="currentColor" />
                                                 </svg>
                                             </span>
-
                                         </span>
                                         <span class="menu-title">Contrats</span>
                                     </span>
@@ -655,21 +649,19 @@
                                             <span class="svg-icon svg-icon-2">
                                                 <svg width="24" height="24" viewBox="0 0 24 24"
                                                     fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <!-- Représentation de paiement, avec une carte de crédit et un paiement -->
                                                     <path
-                                                        d="M20 14H18V10H20C20.6 10 21 10.4 21 11V13C21 13.6 20.6 14 20 14ZM21 19V17C21 16.4 20.6 16 20 16H18V20H20C20.6 20 21 19.6 21 19ZM21 7V5C21 4.4 20.6 4 20 4H18V8H20C20.6 8 21 7.6 21 7Z"
-                                                        fill="currentColor" />
-                                                    <path opacity="0.3"
-                                                        d="M17 22H3C2.4 22 2 21.6 2 21V3C2 2.4 2.4 2 3 2H17C17.6 2 18 2.4 18 3V21C18 21.6 17.6 22 17 22ZM10 7C8.9 7 8 7.9 8 9C8 10.1 8.9 11 10 11C11.1 11 12 10.1 12 9C12 7.9 11.1 7 10 7ZM13.3 16C14 16 14.5 15.3 14.3 14.7C13.7 13.2 12 12 10.1 12C8.10001 12 6.49999 13.1 5.89999 14.7C5.59999 15.3 6.19999 16 7.39999 16H13.3Z"
+                                                        d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM5 5H19V7H5V5ZM5 9H19V17H5V9ZM17 19H7V18H17V19Z"
                                                         fill="currentColor" />
                                                 </svg>
                                             </span>
-
                                         </span>
-                                        <span class="menu-title">Mes Paiments</span>
+                                        <span class="menu-title">Mes Paiements</span>
                                     </span>
                                 </a>
+
                             </div>
-                        
+
                         </div>
                     </div>
 
