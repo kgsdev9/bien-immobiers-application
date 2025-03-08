@@ -48,7 +48,7 @@ class DossierController extends Controller
         // Mise à jour du dossier
         $dossier->update([
             'locataire_id' => $request->locataire_id,
-            'codedossier' => $this->generateCodedossier($dossier->locataire->name), // Regénère le codedossier
+            'codedossier' => $this->generateCodedossier($dossier->locataire->nom), // Regénère le codedossier
         ]);
 
         return response()->json(['message' => 'Dossier mis à jour avec succès', 'dossier' => $dossier], 200);

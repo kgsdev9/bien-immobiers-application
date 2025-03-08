@@ -285,13 +285,8 @@
                         alert("Veuillez sélectionner des documents à ajouter.");
                         return;
                     }
-
                     const formData = new FormData();
-
-                    // Ajouter chaque fichier sélectionné à formData
                     this.documents.forEach(file => formData.append('documents[]', file));
-
-                    // Ajouter l'ID du dossier
                     formData.append('dossier_id', this.currentDossier.id);
 
                     try {
@@ -305,7 +300,6 @@
                         });
 
                         if (response.ok) {
-                            alert("Documents ajoutés avec succès.");
 
                             Swal.fire({
                                 icon: "success",
@@ -314,8 +308,7 @@
                                 timer: 1500,
                             });
                             this.hideAddDocumentModal();
-                            this.filterDossiers();
-                            alert('tese');
+                            window.location.href = '{{ route('dossiers.index') }}';
                         } else {
                             alert("Erreur lors de l'ajout des documents.");
                         }
