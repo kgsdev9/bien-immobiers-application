@@ -59,6 +59,18 @@
                                         </select>
                                     </div>
 
+
+                                    <div>
+                                        <select x-model="status_id" @change="filterByBien"
+                                            class="form-select form-select-sm" data-live-search="true">
+                                            <option value="">Status du bien</option>
+                                            <template x-for="status in statusbien" :key="status.id">
+                                                <option :value="status.id" x-text="status.name">
+                                                </option>
+                                            </template>
+                                        </select>
+                                    </div>
+
                                     <button @click="printRapport" class="btn btn-light-primary btn-sm">
                                         <i class="fa fa-print"></i> Imprimer
                                     </button>
@@ -150,7 +162,8 @@
         </div>
 
         <template x-if="showModal">
-            <div class="modal fade show d-block" tabindex="-1" aria-modal="true" style="background-color: rgba(0,0,0,0.5)">
+            <div class="modal fade show d-block" tabindex="-1" aria-modal="true"
+                style="background-color: rgba(0,0,0,0.5)">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -254,8 +267,10 @@
                 listBiens: @json($listebiens),
                 communes: @json($listecommunes),
                 typebien: @json($listetypesbiens),
+                statusbien: @json($statusbien),
                 commune_id: '',
                 typebien_id: '',
+                status_id: '',
                 filteredBiens: [],
                 currentPage: 1,
                 biensPerPage: 10,
@@ -345,6 +360,15 @@
                             .commune_id));
                     }
 
+                    if (this.status_id) {
+                        this.filteredBiens = this.filteredBiens.filter(bien => bien.parametre_status_id === parseInt(this
+                            .status_id));
+                    }
+
+
+
+
+
                     // Filtrer par type de bien si un type est sélectionné
                     if (this.typebien_id) {
                         this.filteredBiens = this.filteredBiens.filter(bien => bien.type_bien_id === parseInt(this
@@ -357,7 +381,7 @@
                             return (
                                 bien.nom && bien.nom.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
                                 bien.adresse && bien.adresse.toLowerCase().includes(this.searchTerm
-                                .toLowerCase()) ||
+                                    .toLowerCase()) ||
                                 bien.superficie && bien.superficie.toString().toLowerCase().includes(this
                                     .searchTerm.toLowerCase()) ||
                                 bien.nombre_pieces && bien.nombre_pieces.toString().toLowerCase().includes(this
