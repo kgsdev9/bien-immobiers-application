@@ -3,12 +3,13 @@
 namespace App\Http\Controllers\GestionDossiers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Document;
 use App\Models\Dossier;
 use App\Models\Locataire;
-use Dom\Document;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use ZipArchive;
+
 class DossierController extends Controller
 {
 
@@ -126,38 +127,44 @@ class DossierController extends Controller
     }
 
 
-
-
-
-public function export()
-{
-    // Récupérer tous les documents (ajustez cela selon votre logique)
-    $documents = Document::all();
-
-    // Créer un fichier ZIP
-    $zip = new ZipArchive();
-    $zipFileName = 'documents_export.zip';
-    $zipPath = storage_path('app/' . $zipFileName);
-
-    // Ouvrir un fichier ZIP pour ajouter les fichiers
-    if ($zip->open($zipPath, ZipArchive::CREATE) !== TRUE) {
-        return response()->json(['error' => 'Impossible de créer le fichier ZIP'], 500);
-    }
-
-    // Ajouter chaque document au fichier ZIP
-    foreach ($documents as $document)
+    public function export(Request $request)
     {
-        $filePath = storage_path('app/s3/' . $document->file_name);  // Adaptez ce chemin selon votre logique
-        if (file_exists($filePath)) {
-            $zip->addFile($filePath, $document->original_name);  // Ajoute le fichier avec son nom d'origine
+        // Récupérer tous les documents
+        $documents = Document::all();
+
+        // Chemin où les documents sont stockés
+        $documentDirectory = public_path('s3/locataires'); // C'est ici que vos fichiers sont stockés
+
+
+        // Créer un fichier ZIP
+        $zip = new ZipArchive();
+        $zipFileName = 'documents_export.zip';
+        $zipPath = storage_path('app/' . $zipFileName);  // Chemin de stockage pour le fichier ZIP
+
+        // Ouvrir le fichier ZIP pour ajouter les fichiers
+        if ($zip->open($zipPath, ZipArchive::CREATE) !== TRUE) {
+            return response()->json(['error' => 'Impossible de créer le fichier ZIP'], 500);
         }
+
+        // Ajouter chaque document au fichier ZIP
+        foreach ($documents as $document) {
+            // Définir le chemin du fichier à partir du chemin public
+            $filePath = $documentDirectory . '/' . $document->document;  // Assurez-vous que `file_name` est bien le nom du fichier
+
+            // Vérifier si le fichier existe
+            if (file_exists($filePath)) {
+                // Ajouter le fichier au ZIP avec son nom original
+                $zip->addFile($filePath, $document->original_name);
+            } else {
+                // Si le fichier n'existe pas, vous pouvez loguer l'erreur ou gérer cela comme vous le souhaitez
+                \Log::warning("Le fichier " . $filePath . " n'existe pas.");
+            }
+        }
+
+        // Fermer le fichier ZIP
+        $zip->close();
+
+        // Retourner le fichier ZIP en téléchargement
+        return response()->download($zipPath)->deleteFileAfterSend(true);
     }
-
-    // Fermer le fichier ZIP
-    $zip->close();
-
-    // Retourner le fichier ZIP en téléchargement
-    return response()->download($zipPath)->deleteFileAfterSend(true);
-}
-
 }

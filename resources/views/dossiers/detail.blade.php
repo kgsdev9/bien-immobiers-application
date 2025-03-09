@@ -76,14 +76,12 @@
                             </div>
                             <div class="card-toolbar">
                                 <div class="d-flex justify-content-end">
-                                    <button type="button" class="btn btn-flex btn-primary">
+                                    @can('admin')
 
-                                        Télecharger des fichiers
-                                    </button>
-                                    &nbsp;
-                                    <button type="button" class="btn btn-primary btn-sm ">
+                                    <button @click="exportDocuments()" type="button" class="btn btn-primary btn-sm ">
                                         Exporter
                                     </button>
+                                    @endcan
                                 </div>
                             </div>
                         </div>
@@ -201,9 +199,11 @@
                 },
 
                 exportDocuments() {
+
+
                     // Vous pouvez envoyer la requête AJAX pour obtenir les fichiers exportés
                     fetch('/dossiers/export', {
-                            method: 'GET', // Méthode GET pour récupérer l'archive
+                            method: 'POST', // Méthode GET pour récupérer l'archive
                             headers: {
                                 'Content-Type': 'application/json',
                                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
@@ -240,12 +240,10 @@
                             },
                         });
 
-                        if (response.ok)
-                        {
+                        if (response.ok) {
                             const result = await response.json();
 
-                            if (result.success)
-                            {
+                            if (result.success) {
                                 Swal.fire({
                                     icon: "success",
                                     title: result.message,
@@ -253,25 +251,22 @@
                                     timer: 1500,
                                 });
                                 this.documents = this.documents.filter(doc => doc.id !== document);
-                             
-                            } else
-                            {
+
+                            } else {
                                 Swal.fire({
                                     icon: "error",
                                     title: result.message,
                                     showConfirmButton: true,
                                 });
                             }
-                        } else
-                        {
+                        } else {
                             Swal.fire({
                                 icon: "error",
                                 title: "Erreur lors de la requête.",
                                 showConfirmButton: true,
                             });
                         }
-                    } catch (error)
-                    {
+                    } catch (error) {
                         console.error("Erreur réseau :", error);
                         Swal.fire({
                             icon: "error",
