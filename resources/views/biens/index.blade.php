@@ -38,27 +38,27 @@
                                 <div class="d-flex justify-content-end align-items-center gap-3">
 
                                     <div>
-                                        <select x-model="selectedCategory" @change="filterByCategory"
+                                        <select x-model="commune_id" @change="filterByBien"
                                             class="form-select form-select-sm" data-live-search="true">
                                             <option value="">Toutes les communes</option>
-                                            <template x-for="category in categories" :key="category.id">
-                                                <option :value="category.id" x-text="category.libellecategorieproduct">
+                                            <template x-for="commune in communes" :key="commune.id">
+                                                <option :value="commune.id" x-text="commune.nom">
                                                 </option>
                                             </template>
                                         </select>
                                     </div>
 
                                     <div>
-                                        <select x-model="selectedCategory" @change="filterByCategory"
+                                        <select x-model="typebien_id" @change="filterByBien"
                                             class="form-select form-select-sm" data-live-search="true">
-                                            <option value="">Toutes les catégories</option>
-                                            <template x-for="category in categories" :key="category.id">
-                                                <option :value="category.id" x-text="category.libellecategorieproduct">
+                                            <option value="">Type de bien</option>
+                                            <template x-for="type in typebien" :key="type.id">
+                                                <option :value="type.id" x-text="type.nom">
                                                 </option>
                                             </template>
                                         </select>
                                     </div>
-                                    
+
                                     <button @click="printRapport" class="btn btn-light-primary btn-sm">
                                         <i class="fa fa-print"></i> Imprimer
                                     </button>
@@ -154,7 +154,8 @@
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" x-text="isEdite ? 'Modification du Bien' : 'Création d\'un Bien'"></h5>
+                            <h5 class="modal-title" x-text="isEdite ? 'Modification du Bien' : 'Création d\'un Bien'">
+                            </h5>
                             <button type="button" class="btn-close" @click="hideModal()"></button>
                         </div>
                         <div class="modal-body">
@@ -251,6 +252,10 @@
             return {
                 searchTerm: '',
                 listBiens: @json($listebiens),
+                communes: @json($listecommunes),
+                typebien: @json($listetypesbiens),
+                commune_id: '',
+                typebien_id: '',
                 filteredBiens: [],
                 currentPage: 1,
                 biensPerPage: 10,
@@ -329,6 +334,45 @@
                     this.totalPages = Math.ceil(this.filteredBiens.length / this.biensPerPage);
                     this.currentPage = 1;
                 },
+
+                filterByBien() {
+                    // Réinitialiser filteredBiens à la liste complète des biens
+                    this.filteredBiens = this.listBiens;
+
+                    // Filtrer par commune si une commune est sélectionnée
+                    if (this.commune_id) {
+                        this.filteredBiens = this.filteredBiens.filter(bien => bien.commune_id === parseInt(this
+                            .commune_id));
+                    }
+
+                    // Filtrer par type de bien si un type est sélectionné
+                    if (this.typebien_id) {
+                        this.filteredBiens = this.filteredBiens.filter(bien => bien.type_bien_id === parseInt(this
+                            .typebien_id));
+                    }
+
+                    // Optionnel : Appliquer également un filtrage par recherche textuelle (si nécessaire)
+                    if (this.searchTerm) {
+                        this.filteredBiens = this.filteredBiens.filter(bien => {
+                            return (
+                                bien.nom && bien.nom.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+                                bien.adresse && bien.adresse.toLowerCase().includes(this.searchTerm
+                                .toLowerCase()) ||
+                                bien.superficie && bien.superficie.toString().toLowerCase().includes(this
+                                    .searchTerm.toLowerCase()) ||
+                                bien.nombre_pieces && bien.nombre_pieces.toString().toLowerCase().includes(this
+                                    .searchTerm.toLowerCase())
+                            );
+                        });
+                    }
+
+                    // Calculer le nombre de pages en fonction du nombre de biens filtrés
+                    this.totalPages = Math.ceil(this.filteredBiens.length / this.biensPerPage);
+
+                    // Réinitialiser la page actuelle à la première page après filtrage
+                    this.currentPage = 1;
+                },
+
 
                 // Méthode pour la pagination (aller à une page spécifique)
                 goToPage(page) {

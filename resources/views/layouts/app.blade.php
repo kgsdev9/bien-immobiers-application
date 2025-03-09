@@ -116,6 +116,8 @@
 
                                 </a>
 
+                                @can('admin')
+
                                 <a href="{{ route('facturepersonnalite.index') }}" class="menu-item  me-0 me-lg-2">
                                     <!--begin:Menu link-->
                                     <span class="menu-link">
@@ -134,7 +136,7 @@
                                     </span>
 
                                 </a>
-
+                                @endcan
                                 <a href="{{ route('dossiers.index') }}"
                                     class="menu-item menu-lg-down-accordion menu-sub-lg-down-indention me-0 me-lg-2">
                                     <!--begin:Menu link-->
