@@ -36,39 +36,33 @@
                                                 <i class="ki-duotone ki-dots-vertical fs-4"></i>
                                             </button>
                                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                <li><a class="dropdown-item" href="#"
-                                                        @click="openModal(dossier)">Modifier</a></li>
-                                                <li><a class="dropdown-item" href="#"
-                                                        @click="deleteDossier(dossier.id)">Supprimer</a></li>
-                                                <li><a class="dropdown-item" href="#"
-                                                        @click="exportDossier(dossier)">Exporter</a></li>
+                                                <li><a class="dropdown-item" href="#" @click="openModal(dossier)">Modifier</a></li>
+                                                <li><a class="dropdown-item" href="#" @click="deleteDossier(dossier.id)">Supprimer</a></li>
+                                                <li><a class="dropdown-item" href="#" @click="exportDossier(dossier)">Exporter</a></li>
                                             </ul>
                                         </div>
 
-                                        <!-- Nom du dossier -->
-                                        <a href="#" class="text-gray-800 text-hover-primary d-flex flex-column">
+                                        <!-- Nom du dossier et lien vers la page de détails -->
+                                        <a :href="'{{ route('dossiers.show', '') }}/' + dossier.id" class="text-gray-800 text-hover-primary d-flex flex-column">
                                             <div class="symbol symbol-75px mb-5">
-                                                <img src="{{ asset('folder-document.svg') }}" class="theme-light-show"
-                                                    alt="">
-                                                <img src="/keen/demo1/assets/media/svg/files/folder-document-dark.svg"
-                                                    class="theme-dark-show" alt="">
+                                                <img src="{{ asset('folder-document.svg') }}" class="theme-light-show" alt="">
+                                                <img src="/keen/demo1/assets/media/svg/files/folder-document-dark.svg" class="theme-dark-show" alt="">
                                             </div>
                                             <div class="fs-5 fw-bold mb-2" x-text="dossier.codedossier"></div>
                                         </a>
 
                                         <!-- Nombre de documents -->
-                                        <div class="fs-7 fw-semibold text-gray-500"
-                                            x-text="dossier.documents_count + ' fichiers'"></div>
+                                        <div class="fs-7 fw-semibold text-gray-500" x-text="dossier.documents_count + ' fichiers'"></div>
 
                                         <!-- Ajouter un document -->
                                         <div class="mt-2">
-                                            <button @click="openAddDocumentModal(dossier)"
-                                                class="btn btn-primary btn-sm">Ajouter un document</button>
+                                            <button @click="openAddDocumentModal(dossier)" class="btn btn-primary btn-sm">Ajouter un document</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </template>
+
                     </div>
 
                     <!-- Pagination -->

@@ -1,257 +1,194 @@
 @extends('layouts.app')
-@section('title', 'Gestion électronique des dossiers')
+@section('title', 'Detail dossier')
 @section('content')
-    <div class="app-main flex-column flex-row-fluid mt-4" id="kt_app_main" x-data="dossierSearch()" x-init="init()">
+    <div class="app-main flex-column flex-row-fluid" x-data="detailDossier({{ json_encode($dossier) }}, {{ json_encode($documents) }})" x-init="init()">
         <div class="d-flex flex-column flex-column-fluid">
-            <div id="kt_app_content" class="app-content flex-column-fluid">
-                <div id="kt_app_content_container" class="app-container container-xxl">
-                    <div class="d-flex flex-wrap flex-stack mb-6">
-                        <h3 class="fw-bold my-2">
-                            Dossiers de locations
-                            <span class="fs-6 text-gray-500 fw-semibold ms-1">Electronique</span>
-                        </h3>
-                        <div class="d-flex my-2">
-                            <div class="d-flex align-items-center position-relative me-4">
-                                <i class="ki-duotone ki-magnifier fs-3 position-absolute ms-3"><span
-                                        class="path1"></span><span class="path2"></span></i>
-                                <input type="text" class="form-control form-control-sm border-body bg-body w-150px ps-10"
-                                    placeholder="Rechercher" x-model="searchTerm" @input="filterDossiers">
-                            </div>
-                            <button @click="openModal()" class="btn btn-primary btn-sm">
-                                Nouveau Dossier
-                            </button>
-                        </div>
+            <div class="app-toolbar py-3 py-lg-6">
+                <div class="app-container container-xxl d-flex flex-stack">
+                    <div class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
+                        <h1 class="page-heading d-flex text-gray-900 fw-bold fs-3 flex-column justify-content-center my-0">
+                            Visualisation du dossier de <span
+                                x-text="dossier.locataire ? dossier.locataire.nom : 'Locataire inconnu'"></span></h1>
+                        <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1">
+                            <li class="breadcrumb-item text-muted"><a href="#"
+                                    class="text-muted text-hover-primary">Accueil</a></li>
+                            <li class="breadcrumb-item"><span class="bullet bg-gray-500 w-5px h-2px"></span></li>
+                            <li class="breadcrumb-item text-muted">Visualisation</li>
+                        </ul>
                     </div>
-
-                    <!-- Tableau des Dossiers -->
-                    <div class="row g-6 g-xl-9 mb-6 mb-xl-9">
-                        <template x-for="dossier in paginatedDossiers" :key="dossier.id">
-                            <div class="col-md-6 col-lg-4 col-xl-3">
-                                <div class="card h-100">
-                                    <div class="card-body d-flex justify-content-center text-center flex-column p-8">
-                                        <!-- Dropdown Menu for Actions -->
-                                        <div class="dropdown position-absolute top-0 end-0 mt-2 me-2">
-                                            <button class="btn btn-sm btn-light dropdown-toggle" type="button"
-                                                id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                                <i class="ki-duotone ki-dots-vertical fs-4"></i>
-                                            </button>
-                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                <li><a class="dropdown-item" href="#"
-                                                        @click="openEditModal(dossier)">Modifier</a></li>
-                                                <li><a class="dropdown-item" href="#"
-                                                        @click="deleteDossier(dossier.id)">Supprimer</a></li>
-                                                <li><a class="dropdown-item" href="#"
-                                                        @click="exportDossier(dossier)">Exporter</a></li>
-                                            </ul>
-                                        </div>
-
-                                        <!-- Nom du dossier -->
-                                        <a href="#" class="text-gray-800 text-hover-primary d-flex flex-column">
-                                            <div class="symbol symbol-75px mb-5">
-                                                <img src="{{ asset('folder-document.svg') }}" class="theme-light-show"
-                                                    alt="">
-                                                <img src="/keen/demo1/assets/media/svg/files/folder-document-dark.svg"
-                                                    class="theme-dark-show" alt="">
-                                            </div>
-                                            <div class="fs-5 fw-bold mb-2" x-text="dossier.codedossier"></div>
-                                        </a>
-
-                                        <!-- Nombre de documents -->
-                                        <div class="fs-7 fw-semibold text-gray-500"
-                                            x-text="dossier.documents_count + ' fichiers'"></div>
-
-                                        <!-- Ajouter des documents -->
-                                        <div class="mt-2">
-                                            <button @click="openAddDocumentModal(dossier)"
-                                                class="btn btn-primary btn-sm">Ajouter des documents</button>
-                                        </div>
+                </div>
+            </div>
+            <div class="app-content flex-column-fluid">
+                <div id="kt_app_content_container" class="app-container container-xxl">
+                    <!-- Card for title and navigation -->
+                    <div class="card card-flush pb-0 bgi-position-y-center bgi-no-repeat mb-10"
+                        style="background-size: auto calc(100% + 10rem); background-position-x: 100%; background-image: url('/keen/demo4/assets/media/illustrations/sketchy-1/4.png')">
+                        <!--begin::Card header-->
+                        <div class="card-header pt-10">
+                            <div class="d-flex align-items-center">
+                                <!--begin::Icon-->
+                                <div class="symbol symbol-circle me-5">
+                                    <div
+                                        class="symbol-label bg-transparent text-primary border border-secondary border-dashed">
+                                        <i class="ki-duotone ki-abstract-47 fs-2x text-primary">
+                                            <span class="path1"></span>
+                                            <span class="path2"></span>
+                                        </i>
                                     </div>
                                 </div>
+                                <!--end::Icon-->
+                                <!--begin::Title-->
+                                <div class="d-flex flex-column">
+                                    <h2 class="mb-1" x-text="dossier.locataire?.nom ?? 'N/A'"></h2>
+                                    <div class="text-muted fw-bold">
+                                        <a href="#">Keenthemes</a>
+                                        <span class="mx-3">|</span>
+                                        <a href="#">File Manager</a>
+                                        <span class="mx-3">|</span>
+                                        2.6 GB
+                                        <span class="mx-3">|</span>
+                                        758 items
+                                    </div>
+                                </div>
+                                <!--end::Title-->
                             </div>
-                        </template>
+                        </div>
+
+                        <div class="card-body pb-0">
+
+                        </div>
+
                     </div>
 
-                    <!-- Pagination -->
-                    <div class="d-flex justify-content-center">
-                        <button @click="goToPage(currentPage - 1)" :disabled="currentPage === 1"
-                            class="btn btn-light btn-sm">Précédent</button>
-                        <button @click="goToPage(currentPage + 1)" :disabled="currentPage === totalPages"
-                            class="btn btn-light btn-sm">Suivant</button>
+
+                    <div class="card card-flush">
+                        <div class="card-header pt-8">
+                            <div class="card-title">
+                                <div class="d-flex align-items-center position-relative my-1">
+                                    <i class="ki-duotone ki-magnifier fs-1 position-absolute ms-6">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                    </i>
+                                    <input type="text" class="form-control form-control-solid w-250px ps-15"
+                                        placeholder="Rechercher un document" x-model="searchQuery" x-debounce="500ms">
+                                </div>
+                            </div>
+                            <div class="card-toolbar">
+                                <div class="d-flex justify-content-end">
+                                    <button type="button" class="btn btn-flex btn-primary">
+
+                                        Télecharger des fichiers
+                                    </button>
+                                    &nbsp;
+                                    <button type="button" class="btn btn-primary btn-sm ">
+                                        Exporter
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Table for documents -->
+                        <div class="card-body">
+                            <div class="d-flex flex-stack">
+                                <div class="badge badge-lg badge-light-primary">
+                                    <div class="d-flex align-items-center flex-wrap">
+                                        <i class="ki-duotone ki-abstract-32 fs-2 text-primary me-3">
+                                            <span class="path1"></span>
+                                            <span class="path2"></span>
+                                        </i>
+                                        <a href="#">Gestion </a>
+                                        <i class="ki-duotone ki-right fs-2 text-primary mx-1"></i>
+                                        <a href="#">electronique</a>
+                                        <i class="ki-duotone ki-right fs-2 text-primary mx-1"></i>
+                                        <a href="#">documents</a>
+                                    </div>
+                                </div>
+                                <div class="badge badge-lg badge-primary">
+                                    <span x-text="filteredDocuments.length + ' fichiers'"></span>
+                                </div>
+                            </div>
+
+                            <!-- Document Table -->
+                            <div class="table-responsive">
+                                <table class="table align-middle table-row-dashed fs-6 gy-5">
+                                    <thead>
+                                        <tr class="text-start text-gray-500 fw-bold fs-7 text-uppercase gs-0">
+                                            <th>Libelle document</th>
+                                            <th>Date création</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <template x-for="document in filteredDocuments" :key="document.id">
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <i class="ki-duotone ki-files fs-2x text-primary me-4"></i>
+                                                        <a :href="document.url" class="text-gray-800 text-hover-primary"
+                                                            x-text="document.original_name"></a>
+                                                    </div>
+                                                </td>
+
+                                                <td x-text="document.created_at"></td>
+                                                <td class="text-end">
+                                                    <div class="d-flex justify-content-end">
+                                                        <button @click="viewDocument(document.document)"
+                                                            class="btn btn-sm btn-icon btn-light btn-active-light-primary"
+                                                            title="Visualiser le document">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16"
+                                                                height="16" fill="currentColor" class="bi bi-eye"
+                                                                viewBox="0 0 16 16">
+                                                                <path
+                                                                    d="M8 3c-4.418 0-8 3-8 6s3.582 6 8 6 8-3 8-6-3.582-6-8-6zm0 10a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-7a3 3 0 1 0 0 6 3 3 0 0 0 0-6z" />
+                                                            </svg>
+                                                        </button>
+
+                                                        &nbsp &nbsp;
+                                                        <button type="button"
+                                                            class="btn btn-sm btn-icon btn-light btn-active-light-danger"
+                                                            title="Supprimer le document" @click="confirmDelete()">
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </template>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-
-        <!-- Modal Modifier Dossier -->
-        <template x-if="showModal">
-            <div class="modal fade show d-block" tabindex="-1" aria-modal="true" style="background-color: rgba(0,0,0,0.5)">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" x-text="isEditModal ? 'Modifier le Dossier' : 'Créer un Dossier'"></h5>
-                            <button type="button" class="btn-close" @click="hideModal()"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form @submit.prevent="submitForm">
-                                <div class="mb-3">
-                                    <label for="locataire_id" class="form-label">Choisir le locataire</label>
-                                    <select id="locataire_id" class="form-select" x-model="formData.locataire_id" required>
-                                        <option value="">Choisir un locataire</option>
-                                        @foreach ($locataires as $locataire)
-                                            <option value="{{ $locataire->id }}">
-                                                {{ $locataire->nom }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <button type="submit" class="btn btn-primary"
-                                    x-text="isEditModal ? 'Mettre à jour' : 'Enregistrer'"></button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </template>
-
-        <!-- Modal Ajouter des Documents -->
-        <template x-if="showAddDocumentModal">
-            <div class="modal fade show d-block" tabindex="-1" aria-modal="true" style="background-color: rgba(0,0,0,0.5)">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Ajouter des Documents</h5>
-                            <button type="button" class="btn-close" @click="hideAddDocumentModal()"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form @submit.prevent="addDocuments">
-                                <div class="mb-3">
-                                    <label for="documents" class="form-label">Choisir des fichiers</label>
-                                    <input type="file" id="documents" class="form-control" x-model="documents"
-                                        multiple required />
-                                </div>
-                                <button type="submit" class="btn btn-primary">Ajouter</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </template>
-
     </div>
+@endsection
 
+@push('scripts')
     <script>
-        function dossierSearch() {
+        function detailDossier(dossier, documents) {
             return {
-                searchTerm: '',
-                dossiers: @json($listedossiers),
-                filteredDossiers: [],
-                showModal: false,
-                showAddDocumentModal: false,
-                isEditModal: false,
-                formData: {
-                    locataire_id: '',
-                },
-                documents: [],
-                currentDossier: null,
-                currentPage: 1,
-                dossiersPerPage: 10,
-                totalPages: 0,
-
-                hideModal() {
-                    this.showModal = false;
-                    this.resetForm();
-                    this.isEditModal = false;
-                    this.currentDossier = null;
-                },
-
-                hideAddDocumentModal() {
-                    this.showAddDocumentModal = false;
-                },
-
-                openModal(dossier = null) {
-                    this.isEditModal = dossier !== null;
-                    if (this.isEditModal) {
-                        this.currentDossier = {
-                            ...dossier
-                        };
-                        this.formData.locataire_id = this.currentDossier.locataire_id;
-                    } else {
-                        this.resetForm();
-                    }
-                    this.showModal = true;
-                },
-
-                openAddDocumentModal(dossier) {
-                    this.currentDossier = dossier;
-                    this.showAddDocumentModal = true;
-                },
-
-                resetForm() {
-                    this.formData = {
-                        locataire_id: ''
-                    };
-                },
-
-                async submitForm() {
-                    // Submit logic for dossier creation/update
-                    console.log("Form submitted", this.formData);
-                    this.hideModal();
-                },
-
-                async addDocuments() {
-                    if (this.documents.length === 0) {
-                        alert("Veuillez sélectionner des documents à ajouter.");
-                        return;
-                    }
-
-                    const formData = new FormData();
-                    Array.from(this.documents).forEach(file => formData.append('documents[]', file));
-                    formData.append('dossier_id', this.currentDossier.id);
-
-                    try {
-                        const response = await fetch('{{ route('documents.store') }}', {
-                            method: 'POST',
-                            headers: {
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                            },
-                            body: formData,
-                        });
-
-                        if (response.ok) {
-                            alert("Documents ajoutés avec succès.");
-                            this.hideAddDocumentModal();
-                        } else {
-                            alert("Erreur lors de l'ajout des documents.");
-                        }
-                    } catch (error) {
-                        console.error('Error adding documents:', error);
-                    }
-                },
-
-                get paginatedDossiers() {
-                    let start = (this.currentPage - 1) * this.dossiersPerPage;
-                    let end = start + this.dossiersPerPage;
-                    return this.filteredDossiers.slice(start, end);
-                },
-
-                filterDossiers() {
-                    const term = this.searchTerm.toLowerCase();
-                    this.filteredDossiers = this.dossiers.filter(dossier => {
-                        return dossier.codedossier && dossier.codedossier.toLowerCase().includes(term);
-                    });
-                    this.totalPages = Math.ceil(this.filteredDossiers.length / this.dossiersPerPage);
-                    this.currentPage = 1;
-                },
-
-                goToPage(page) {
-                    if (page < 1 || page > this.totalPages) return;
-                    this.currentPage = page;
-                },
-
+                dossier: dossier,
+                documents: documents,
+                searchQuery: '',
                 init() {
-                    this.filterDossiers();
+                    console.log("Dossier chargé :", this.dossier);
+                    console.log("Documents :", this.documents);
+                },
+                get filteredDocuments() {
+                    if (!this.searchQuery) {
+                        return this.documents;
+                    }
+                    return this.documents.filter(doc =>
+                        doc.original_name.toLowerCase().includes(this.searchQuery.toLowerCase())
+                    );
+                },
+
+                viewDocument(documentPath) {
+                    const url = '/s3/' + documentPath; // URL du document
+                    window.open(url, '_blank', 'width=800,height=600'); // Ouvre le document dans une nouvelle fenêtre
                 }
             };
         }
     </script>
-@endsection
+@endpush

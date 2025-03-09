@@ -9,6 +9,12 @@ use Illuminate\Http\Request;
 
 class DossierController extends Controller
 {
+
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -42,6 +48,22 @@ class DossierController extends Controller
             return $this->createDossier($request);
         }
     }
+
+
+
+    public function show($dossierId)
+    {
+        $dossier = Dossier::with(['documents', 'locataire'])->find($dossierId); // Charger les documents liés
+        if (!$dossier) {
+            abort(404, 'Dossier non trouvé');
+        }
+
+        return view('dossiers.detail', [
+            'dossier' => $dossier,
+            'documents' => $dossier->documents // Passer les documents associés
+        ]);
+    }
+
 
     private function updateDossier(Dossier $dossier, Request $request)
     {

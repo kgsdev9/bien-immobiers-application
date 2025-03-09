@@ -36,11 +36,35 @@
                             </div>
                             <div class="card-toolbar">
                                 <div class="d-flex justify-content-end align-items-center gap-3">
+
+                                    <div>
+                                        <select x-model="selectedCategory" @change="filterByCategory"
+                                            class="form-select form-select-sm" data-live-search="true">
+                                            <option value="">Liste des locataires</option>
+                                            <template x-for="category in categories" :key="category.id">
+                                                <option :value="category.id" x-text="category.libellecategorieproduct">
+                                                </option>
+                                            </template>
+                                        </select>
+                                    </div>
+
+
+                                    <div>
+                                        <select x-model="selectedCategory" @change="filterByCategory"
+                                            class="form-select form-select-sm" data-live-search="true">
+                                            <option value="">Liste des mode reglement</option>
+                                            <template x-for="category in categories" :key="category.id">
+                                                <option :value="category.id" x-text="category.libellecategorieproduct">
+                                                </option>
+                                            </template>
+                                        </select>
+                                    </div>
+
                                     <button @click="printRapport" class="btn btn-light-primary btn-sm">
                                         <i class="fa fa-print"></i> Imprimer
                                     </button>
                                     <button @click="exportRaport" class="btn btn-light-primary btn-sm">
-                                        <i class='fas fa-file-export'></i> Export
+                                        <i class='fas fa-file-export'></i> Exporter
                                     </button>
                                     <button @click="showModal = true"
                                         class="btn btn-light btn-active-light-primary btn-flex btn-center btn-sm">
@@ -501,8 +525,7 @@
                                 this.resetForm();
                                 this.hideModal();
                             }
-                        } else
-                        {
+                        } else {
                             // Si le paiement existe déjà
                             const data = await response.json();
                             if (data.paiement_existe) {

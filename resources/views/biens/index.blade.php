@@ -36,6 +36,29 @@
                             </div>
                             <div class="card-toolbar">
                                 <div class="d-flex justify-content-end align-items-center gap-3">
+
+                                    <div>
+                                        <select x-model="selectedCategory" @change="filterByCategory"
+                                            class="form-select form-select-sm" data-live-search="true">
+                                            <option value="">Toutes les communes</option>
+                                            <template x-for="category in categories" :key="category.id">
+                                                <option :value="category.id" x-text="category.libellecategorieproduct">
+                                                </option>
+                                            </template>
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <select x-model="selectedCategory" @change="filterByCategory"
+                                            class="form-select form-select-sm" data-live-search="true">
+                                            <option value="">Toutes les catégories</option>
+                                            <template x-for="category in categories" :key="category.id">
+                                                <option :value="category.id" x-text="category.libellecategorieproduct">
+                                                </option>
+                                            </template>
+                                        </select>
+                                    </div>
+                                    
                                     <button @click="printRapport" class="btn btn-light-primary btn-sm">
                                         <i class="fa fa-print"></i> Imprimer
                                     </button>
