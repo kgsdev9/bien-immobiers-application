@@ -5,8 +5,10 @@ namespace App\Http\Controllers\GestionDossiers;
 use App\Http\Controllers\Controller;
 use App\Models\Dossier;
 use App\Models\Locataire;
+use Dom\Document;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Storage;
+use ZipArchive;
 class DossierController extends Controller
 {
 
@@ -122,4 +124,40 @@ class DossierController extends Controller
 
         return response()->json(['message' => 'Dossier supprimé avec succès'], 200);
     }
+
+
+
+
+
+public function export()
+{
+    // Récupérer tous les documents (ajustez cela selon votre logique)
+    $documents = Document::all();
+
+    // Créer un fichier ZIP
+    $zip = new ZipArchive();
+    $zipFileName = 'documents_export.zip';
+    $zipPath = storage_path('app/' . $zipFileName);
+
+    // Ouvrir un fichier ZIP pour ajouter les fichiers
+    if ($zip->open($zipPath, ZipArchive::CREATE) !== TRUE) {
+        return response()->json(['error' => 'Impossible de créer le fichier ZIP'], 500);
+    }
+
+    // Ajouter chaque document au fichier ZIP
+    foreach ($documents as $document)
+    {
+        $filePath = storage_path('app/s3/' . $document->file_name);  // Adaptez ce chemin selon votre logique
+        if (file_exists($filePath)) {
+            $zip->addFile($filePath, $document->original_name);  // Ajoute le fichier avec son nom d'origine
+        }
+    }
+
+    // Fermer le fichier ZIP
+    $zip->close();
+
+    // Retourner le fichier ZIP en téléchargement
+    return response()->download($zipPath)->deleteFileAfterSend(true);
+}
+
 }

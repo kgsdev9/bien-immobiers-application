@@ -58,6 +58,9 @@ Route::resource('/typebiens', TypeBienController::class);
 Route::resource('/contrat', ContratController::class);
 Route::resource('/paiements', PaiemntLoyerController::class);
 Route::resource('/dossiers', DossierController::class);
+// Route pour l'exportation des fichiers
+Route::get('/dossiers/export', [DossierController::class, 'export'])->name('dossiers.export');
+
 Route::resource('/documents', DocumentController::class);
 
 

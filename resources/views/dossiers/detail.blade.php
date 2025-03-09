@@ -39,15 +39,16 @@
                                 <!--end::Icon-->
                                 <!--begin::Title-->
                                 <div class="d-flex flex-column">
-                                    <h2 class="mb-1" x-text="dossier.locataire?.nom ?? 'N/A'"></h2>
+                                    <h2 class="mb-1"
+                                        x-text="dossier.locataire?.prenom + ' ' + dossier.locataire?.nom ?? 'Locataire Inconnu'">
+                                    </h2>
                                     <div class="text-muted fw-bold">
-                                        <a href="#">Keenthemes</a>
+                                        <a href="#" x-text="dossier.locataire?.profession ?? 'N/A'"></a>
                                         <span class="mx-3">|</span>
-                                        <a href="#">File Manager</a>
-                                        <span class="mx-3">|</span>
-                                        2.6 GB
-                                        <span class="mx-3">|</span>
-                                        758 items
+                                        <a href="#" x-text="dossier.locataire?.adresse ?? 'N/A'"></a>
+                                        <span class="mx-3" x-text="dossier.locataire?.telephone ?? 'N/A'">|</span>
+                                        <span class="mx-3" x-text="dossier.locataire?.email ?? 'N/A'">|</span>
+
                                     </div>
                                 </div>
                                 <!--end::Title-->
@@ -146,7 +147,8 @@
                                                         &nbsp &nbsp;
                                                         <button type="button"
                                                             class="btn btn-sm btn-icon btn-light btn-active-light-danger"
-                                                            title="Supprimer le document" @click="confirmDelete()">
+                                                            title="Supprimer le document"
+                                                            @click="confirmDelete(document.id)">
                                                             <i class="fa fa-trash"></i>
                                                         </button>
                                                     </div>
@@ -171,6 +173,7 @@
                 dossier: dossier,
                 documents: documents,
                 searchQuery: '',
+                documentToDelete: null,
                 init() {
                     console.log("Dossier chargé :", this.dossier);
                     console.log("Documents :", this.documents);
@@ -183,11 +186,103 @@
                         doc.original_name.toLowerCase().includes(this.searchQuery.toLowerCase())
                     );
                 },
-
+                // Affichage du document dans une nouvelle fenêtre
                 viewDocument(documentPath) {
-                    const url = '/s3/' + documentPath; // URL du document
-                    window.open(url, '_blank', 'width=800,height=600'); // Ouvre le document dans une nouvelle fenêtre
-                }
+                    const url = '/s3/' + documentPath;
+                    window.open(url, '_blank', 'width=800,height=600');
+                },
+
+                // Confirmation avant suppression
+                confirmDelete(documentId) {
+                    this.documentToDelete = documentId;
+                    if (confirm("Êtes-vous sûr de vouloir supprimer ce document ? Cette action est irréversible.")) {
+                        this.deleteDocument(documentId);
+                    }
+                },
+
+                exportDocuments() {
+                    // Vous pouvez envoyer la requête AJAX pour obtenir les fichiers exportés
+                    fetch('/dossiers/export', {
+                            method: 'GET', // Méthode GET pour récupérer l'archive
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
+                                    'content') // CSRF Token si nécessaire
+                            }
+                        })
+                        .then(response => response.blob())
+                        .then(blob => {
+                            const link = document.createElement('a');
+                            const url = window.URL.createObjectURL(blob);
+                            link.href = url;
+                            link.download = 'documents_export.zip'; // Nom du fichier zip exporté
+                            link.click();
+                        })
+                        .catch(error => {
+                            console.error("Erreur d'exportation:", error);
+                            alert("Une erreur est survenue lors de l'exportation.");
+                        });
+                },
+
+                async deleteDocument(document) {
+                    try {
+
+                        const url =
+                            `{{ route('documents.destroy', ['document' => '__ID__']) }}`.replace(
+                                "__ID__",
+                                document
+                            );
+
+                        const response = await fetch(url, {
+                            method: "DELETE",
+                            headers: {
+                                "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                            },
+                        });
+
+                        if (response.ok)
+                        {
+                            const result = await response.json();
+
+                            if (result.success)
+                            {
+                                Swal.fire({
+                                    icon: "success",
+                                    title: result.message,
+                                    showConfirmButton: false,
+                                    timer: 1500,
+                                });
+                                this.documents = this.documents.filter(doc => doc.id !== document);
+                             
+                            } else
+                            {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: result.message,
+                                    showConfirmButton: true,
+                                });
+                            }
+                        } else
+                        {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Erreur lors de la requête.",
+                                showConfirmButton: true,
+                            });
+                        }
+                    } catch (error)
+                    {
+                        console.error("Erreur réseau :", error);
+                        Swal.fire({
+                            icon: "error",
+                            title: "Une erreur réseau s'est produite.",
+                            showConfirmButton: true,
+                        });
+                    }
+                },
+
+                // Suppression du document
+
             };
         }
     </script>
