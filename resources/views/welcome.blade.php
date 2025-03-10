@@ -2,36 +2,24 @@
 
 @section('content')
     <div class="app-main flex-column flex-row-fluid" id="kt_app_main">
-        <!--begin::Content wrapper-->
         <div class="d-flex flex-column flex-column-fluid">
             <!--begin::Toolbar-->
             <div id="kt_app_toolbar" class="app-toolbar py-3 py-lg-6">
-                <!--begin::Toolbar container-->
                 <div id="kt_app_toolbar_container" class="app-container container-fluid d-flex flex-stack">
                     <!--begin::Page title-->
                     <div class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
                         <!--begin::Title-->
                         <h1 class="page-heading d-flex text-dark fw-bold fs-3 flex-column justify-content-center my-0">
                             Tableau de bord {{ Auth::user()->name }} </h1>
-                        <!--end::Title-->
-                        <!--begin::Breadcrumb-->
                         <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1">
-                            <!--begin::Item-->
-
                             <li class="breadcrumb-item text-muted">
                                 <a href="../../demo1/dist/index.html" class="text-muted text-hover-primary">Home</a>
                             </li>
-                            <!--end::Item-->
-                            <!--begin::Item-->
                             <li class="breadcrumb-item">
                                 <span class="bullet bg-gray-400 w-5px h-2px"></span>
                             </li>
-                            <!--end::Item-->
-                            <!--begin::Item-->
                             <li class="breadcrumb-item text-muted">Dashboards</li>
-                            <!--end::Item-->
                         </ul>
-                        <!--end::Breadcrumb-->
                     </div>
 
                 </div>
@@ -39,7 +27,7 @@
             </div>
             <!--end::Toolbar-->
             <!--begin::Content-->
-            {{-- <div id="kt_app_content" class="app-content flex-column-fluid">
+            <div id="kt_app_content" class="app-content flex-column-fluid">
                 <!--begin::Content container-->
                 <div id="kt_app_content_container" class="app-container container-fluid">
                     <!--begin::Row-->
@@ -54,11 +42,11 @@
                                     <!--begin::Title-->
                                     <div class="card-title d-flex flex-column">
                                         <!--begin::Amount-->
-                                        <span class="fs-2hx fw-bold text-white me-2 lh-1 ls-n2">{{ $ventes }}</span>
+                                        <span class="fs-2hx fw-bold text-white me-2 lh-1 ls-n2">{{ $ventes ??0 }}</span>
                                         <!--end::Amount-->
                                         <!--begin::Subtitle-->
-                                        <span class="text-white opacity-75 pt-1 fw-semibold fs-6">Total des ventes de
-                                            l'année
+                                        <span class="text-white opacity-75 pt-1 fw-semibold fs-6">Total cumulés des loyers payés
+                                           
                                         </span>
                                         <!--end::Subtitle-->
                                     </div>
@@ -99,7 +87,7 @@
                                     <div class="d-flex flex-stack">
                                         <!--begin::Section-->
                                         <a href="{{ route('clients.index') }}"
-                                            class="text-primary fw-semibold fs-6 me-2">Gestion client
+                                            class="text-primary fw-semibold fs-6 me-2">Gestion locataires
                                         </a>
                                         <!--end::Section-->
                                         <!--begin::Action-->
@@ -131,8 +119,8 @@
                                     <!--begin::Item-->
                                     <div class="d-flex flex-stack">
                                         <!--begin::Section-->
-                                        <a href="{{ route('ventes.index') }}" class="text-primary fw-semibold fs-6 me-2">
-                                            Gestion des ventes </a>
+                                        <a href="{{ route('dossiers.index') }}" class="text-primary fw-semibold fs-6 me-2">
+                                            Gestion des dossiers </a>
                                         <!--end::Section-->
                                         <!--begin::Action-->
                                         <button type="button"
@@ -163,8 +151,8 @@
                                     <!--begin::Item-->
                                     <div class="d-flex flex-stack">
                                         <!--begin::Section-->
-                                        <a href="{{ route('factures.index') }}"
-                                            class="text-primary fw-semibold fs-6 me-2">Gestion des proforma libre </a>
+                                        <a href="{{ route('biens.index') }}"
+                                            class="text-primary fw-semibold fs-6 me-2">Gestion des biens </a>
                                         <!--end::Section-->
                                         <!--begin::Action-->
                                         <button type="button"
@@ -207,11 +195,11 @@
                                         <div class="d-flex align-items-center">
 
                                             <span class="fs-2hx fw-bold text-dark me-2 lh-1 ls-n2">
-                                                {{ $countlisterecentesfactures }} </span>
+                                                {{ $countlisterecentesfactures ?? 0 }} </span>
                                         </div>
                                         <!--end::Info-->
                                         <!--begin::Subtitle-->
-                                        <span class="text-gray-400 pt-1 fw-semibold fs-6">Total des factures (FCFA )
+                                        <span class="text-gray-400 pt-1 fw-semibold fs-6">Total des paiements (FCFA )
                                         </span>
                                         <!--end::Subtitle-->
                                     </div>
@@ -228,37 +216,23 @@
                                             <div class="bullet w-8px h-3px rounded-2 bg-success me-3"></div>
                                             <!--end::Bullet-->
                                             <!--begin::Label-->
-                                            <div class="text-gray-500 flex-grow-1 me-4">Total jour </div>
+                                            <div class="text-gray-500 flex-grow-1 me-4">Mois en cours </div>
                                             <!--end::Label-->
                                             <!--begin::Stats-->
-                                            <div class="fw-bolder text-gray-700 text-xxl-end">{{ $ventesJour }}</div>
+                                            <div class="fw-bolder text-gray-700 text-xxl-end">{{ $ventesJour ?? 0 }}</div>
                                             <!--end::Stats-->
                                         </div>
-                                        <!--end::Label-->
-                                        <!--begin::Label-->
-                                        <div class="d-flex fw-semibold align-items-center my-3">
-                                            <!--begin::Bullet-->
-                                            <div class="bullet w-8px h-3px rounded-2 bg-primary me-3"></div>
-                                            <!--end::Bullet-->
-                                            <!--begin::Label-->
-                                            <div class="text-gray-500 flex-grow-1 me-4">Total semaine</div>
-                                            <!--end::Label-->
-                                            <!--begin::Stats-->
-                                            <div class="fw-bolder text-gray-700 text-xxl-end">{{ $ventesSemaine }}</div>
-                                            <!--end::Stats-->
-                                        </div>
-                                        <!--end::Label-->
-                                        <!--begin::Label-->
+
                                         <div class="d-flex fw-semibold align-items-center">
                                             <!--begin::Bullet-->
                                             <div class="bullet w-8px h-3px rounded-2 me-3"
                                                 style="background-color: #E4E6EF"></div>
                                             <!--end::Bullet-->
                                             <!--begin::Label-->
-                                            <div class="text-gray-500 flex-grow-1 me-4">Total mois </div>
+                                            <div class="text-gray-500 flex-grow-1 me-4">L\'anne en  cours </div>
                                             <!--end::Label-->
                                             <!--begin::Stats-->
-                                            <div class="fw-bolder text-gray-700 text-xxl-end">{{ $ventesMois }} </div>
+                                            <div class="fw-bolder text-gray-700 text-xxl-end">{{ $ventesMois ?? 0 }} </div>
                                             <!--end::Stats-->
                                         </div>
                                         <!--end::Label-->
@@ -272,14 +246,14 @@
 
                             <div class="card card-flush h-lg-50">
                                 <div class="card-header pt-5">
-                                    <h3 class="card-title text-gray-800">Vos Activités </h3>
+                                    <h3 class="card-title text-gray-800">Statistique de votre entrprise</h3>
                                 </div>
 
                                 <div class="card-body pt-5">
                                     <!--begin::Item-->
                                     <div class="d-flex flex-stack">
                                         <!--begin::Section-->
-                                        <div class="text-gray-700 fw-semibold fs-6 me-2">Total Client </div>
+                                        <div class="text-gray-700 fw-semibold fs-6 me-2">Total locataires </div>
                                         <!--end::Section-->
                                         <!--begin::Statistics-->
                                         <div class="d-flex align-items-senter">
@@ -296,7 +270,7 @@
                                                 </svg>
                                             </span>
 
-                                            <span class="text-gray-900 fw-bolder fs-6">{{ $counCclient }}</span>
+                                            <span class="text-gray-900 fw-bolder fs-6">{{ $countLocataires ?? 0 }}</span>
 
                                         </div>
                                         <!--end::Statistics-->
@@ -308,7 +282,7 @@
                                     <!--begin::Item-->
                                     <div class="d-flex flex-stack">
                                         <!--begin::Section-->
-                                        <div class="text-gray-700 fw-semibold fs-6 me-2">Total Factures Ventes </div>
+                                        <div class="text-gray-700 fw-semibold fs-6 me-2">Total des biens </div>
                                         <!--end::Section-->
                                         <!--begin::Statistics-->
                                         <div class="d-flex align-items-senter">
@@ -326,7 +300,7 @@
                                             </span>
                                             <!--end::Svg Icon-->
                                             <!--begin::Number-->
-                                            <span class="text-gray-900 fw-bolder fs-6">{{ $counFaturesVentes }}</span>
+                                            <span class="text-gray-900 fw-bolder fs-6">{{ $countBiens ?? 0 }}</span>
                                             <!--end::Number-->
                                         </div>
                                         <!--end::Statistics-->
@@ -368,15 +342,15 @@
                                 <div class="card-header pt-7">
                                     <!--begin::Title-->
                                     <h3 class="card-title align-items-start flex-column">
-                                        <span class="card-label fw-bold text-gray-800">Liste des récentes facture ventes
+                                        <span class="card-label fw-bold text-gray-800">Liste des récentes locataires
                                         </span>
-                                        <span class="text-gray-400 mt-1 fw-semibold fs-6">Les facture ventes
+                                        <span class="text-gray-400 mt-1 fw-semibold fs-6">Récenements inscris
                                         </span>
                                     </h3>
                                     <!--end::Title-->
                                     <!--begin::Toolbar-->
                                     <div class="card-toolbar">
-                                        <a href="{{ route('ventes.index') }}" class="btn btn-sm btn-light">Consulter </a>
+                                        <a href="{{ route('clients.index') }}" class="btn btn-sm btn-light">Consulter </a>
                                     </div>
                                     <!--end::Toolbar-->
                                 </div>
@@ -390,17 +364,14 @@
                                             <!--begin::Table head-->
                                             <thead>
                                                 <tr class="fs-7 fw-bold text-gray-400 border-bottom-0">
-                                                    <th class="p-0 pb-3 min-w-175px text-start">CODE FACTURE</th>
-                                                    <th class="p-0 pb-3 min-w-100px text-end">Mode réglement </th>
-                                                    <th class="p-0 pb-3 min-w-175px text-end pe-12">MONTANT TTC</th>
+                                                    <th class="p-0 pb-3 min-w-175px text-start">Code facture</th>
+                                                    <th class="p-0 pb-3 min-w-100px text-end">Email</th>
+                                                    <th class="p-0 pb-3 min-w-175px text-end pe-12">Profesion</th>
                                                     <th class="p-0 pb-3 w-125px text-end pe-7">Date</th>
-
                                                 </tr>
                                             </thead>
-                                            <!--end::Table head-->
-                                            <!--begin::Table body-->
                                             <tbody>
-                                                @foreach ($listerecentesfactures as $facture)
+                                                @foreach ($listelocataires as $locataire)
                                                     <tr>
                                                         <td>
                                                             <div class="d-flex align-items-center">
@@ -408,23 +379,23 @@
                                                                 <div class="d-flex justify-content-start flex-column">
                                                                     <a href="#"
                                                                         class="text-gray-800 fw-bold text-hover-primary mb-1 fs-6">
-                                                                        {{ $facture->numvente }}</a>
+                                                                        {{ $locataire->code_locataire }}</a>
                                                                     <span class="text-gray-400 fw-semibold d-block fs-7">
-                                                                        {{ $facture->nom }}</span>
+                                                                        {{ $locataire->nom }}  {{ $locataire->prenom }}</span>
                                                                 </div>
                                                             </div>
                                                         </td>
                                                         <td class="text-end pe-0">
                                                             <span
-                                                                class="text-gray-600 fw-bold fs-6">{{ $facture->modereglement->libellemodereglement ?? '' }}</span>
+                                                                class="text-gray-600 fw-bold fs-6">{{ $locataire->email ?? '' }}</span>
                                                         </td>
 
                                                         <td class="text-end pe-12">
                                                             <span class="badge py-3 px-4 fs-7 badge-light-primary">
-                                                                {{ $facture->montantttc }}</span>
+                                                                {{ $locataire->profession }}</span>
                                                         </td>
                                                         <td class="text-end pe-0">
-                                                            {{ $facture->created_at->format('d/m/y') }}
+                                                            {{ $locataire->created_at->format('d/m/y') }}
 
 
                                                         </td>
@@ -451,13 +422,10 @@
                     <!--end::Row-->
                 </div>
                 <!--end::Content container-->
-            </div> --}}
+            </div>
             <!--end::Content-->
         </div>
-        <!--end::Content wrapper-->
-        <!--begin::Footer-->
 
-        <!--end::Footer-->
     </div>
 @endsection
 
@@ -466,7 +434,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-          
+
             // Configuration du graphique
             const ctx = document.getElementById('ventesChart').getContext('2d');
             new Chart(ctx, {

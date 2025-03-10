@@ -55,8 +55,7 @@ class ContratController extends Controller
         // Vérifier si le locataire a déjà un contrat actif
         $existingContrat = Contrat::where('locataire_id', $locataireId)
             // ->whereNull('date_fin')  // Assurer que le contrat n'est pas encore terminé
-            ->first();
-
+        ->first();
         if ($existingContrat)
         {
             return response()->json(['message' => 'Le locataire ne peut pas louer plusieurs appartements à la fois'], 400);
@@ -131,7 +130,8 @@ class ContratController extends Controller
             // ->whereNull('date_fin')  // Assurer que le contrat n'est pas encore terminé
             ->first();
 
-        if ($existingContrat) {
+        if ($existingContrat)
+        {
             return response()->json(['message' => 'Le locataire ne peut pas louer plusieurs appartements à la fois'], 400);
         }
 

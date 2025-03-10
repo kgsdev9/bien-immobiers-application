@@ -246,6 +246,7 @@
                                 this.filterDossiers();
                                 this.resetForm();
                                 this.hideModal();
+                                window.location.href = '{{ route('dossiers.index') }}';
                             } else {
                                 Swal.fire({
                                     icon: 'error',

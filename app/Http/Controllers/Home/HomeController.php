@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers\Home;
 use App\Http\Controllers\Controller;
+use App\Models\Bien;
+use App\Models\Locataire;
+use App\Models\Paiement;
+use Carbon\Carbon;
 
 class HomeController extends Controller
 {
@@ -18,7 +22,17 @@ class HomeController extends Controller
 
     public function  index()
     {
-        return view('welcome');
+        $listelocataires = Locataire::take(10)->orderByDesc('created_at')->get();
+        $listeprogrammes  = Paiement::all();
+        $countLocataires = Locataire::count();
+        $countBiens = Bien::count();
+        $paiementMois = Paiement::whereMonth('created_at', Carbon::now()->month)
+                                ->whereYear('created_at', Carbon::now()->year)
+                                ->sum('montant');
+
+
+        return view('welcome', compact('listelocataires', 'paiementMois', 'countLocataires', 'countBiens'));
+
     }
 
 
