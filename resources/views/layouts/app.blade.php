@@ -536,27 +536,22 @@
                                     </div>
                                 </div>
 
-                                <a href="{{ route('typebiens.index') }}" class="menu-item menu-accordion">
+                                <a href="{{ route('typebiens.index') }}" class="menu-item menu-accordion {{ Request::is('typebiens') ? 'active' : '' }}">
                                     <span class="menu-link">
                                         <span class="menu-icon">
                                             <span class="svg-icon svg-icon-2">
-                                                <svg width="24" height="24" viewBox="0 0 24 24"
-                                                    fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <!-- Représentation d'un immeuble -->
-                                                    <path
-                                                        d="M20 3H4C3.4 3 3 3.4 3 4V20C3 20.6 3.4 21 4 21H20C20.6 21 21 20.6 21 20V4C21 3.4 20.6 3 20 3ZM19 19H5V5H19V19Z"
-                                                        fill="currentColor" />
-                                                    <path opacity="0.3" d="M7 8H9V10H7ZM11 8H13V10H11ZM15 8H17V10H15Z"
-                                                        fill="currentColor" />
-                                                    <path opacity="0.3"
-                                                        d="M7 12H9V14H7ZM11 12H13V14H11ZM15 12H17V14H15Z"
-                                                        fill="currentColor" />
+                                                    <path d="M20 3H4C3.4 3 3 3.4 3 4V20C3 20.6 3.4 21 4 21H20C20.6 21 21 20.6 21 20V4C21 3.4 20.6 3 20 3ZM19 19H5V5H19V19Z" fill="currentColor" />
+                                                    <path opacity="0.3" d="M7 8H9V10H7ZM11 8H13V10H11ZM15 8H17V10H15Z" fill="currentColor" />
+                                                    <path opacity="0.3" d="M7 12H9V14H7ZM11 12H13V14H11ZM15 12H17V14H15Z" fill="currentColor" />
                                                 </svg>
                                             </span>
                                         </span>
                                         <span class="menu-title">Type de bien</span>
                                     </span>
                                 </a>
+
 
 
                                 <a href="{{ route('communes.index') }}" class="menu-item menu-accordion">

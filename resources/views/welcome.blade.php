@@ -42,11 +42,11 @@
                                     <!--begin::Title-->
                                     <div class="card-title d-flex flex-column">
                                         <!--begin::Amount-->
-                                        <span class="fs-2hx fw-bold text-white me-2 lh-1 ls-n2">{{ $ventes ??0 }}</span>
+                                        <span class="fs-2hx fw-bold text-white me-2 lh-1 ls-n2">{{ $paiementMois ??0 }}</span>
                                         <!--end::Amount-->
                                         <!--begin::Subtitle-->
                                         <span class="text-white opacity-75 pt-1 fw-semibold fs-6">Total cumulés des loyers payés
-                                           
+
                                         </span>
                                         <!--end::Subtitle-->
                                     </div>
@@ -219,7 +219,7 @@
                                             <div class="text-gray-500 flex-grow-1 me-4">Mois en cours </div>
                                             <!--end::Label-->
                                             <!--begin::Stats-->
-                                            <div class="fw-bolder text-gray-700 text-xxl-end">{{ $ventesJour ?? 0 }}</div>
+                                            <div class="fw-bolder text-gray-700 text-xxl-end">{{ $paiementMois ?? 0 }}</div>
                                             <!--end::Stats-->
                                         </div>
 
@@ -232,7 +232,7 @@
                                             <div class="text-gray-500 flex-grow-1 me-4">L\'anne en  cours </div>
                                             <!--end::Label-->
                                             <!--begin::Stats-->
-                                            <div class="fw-bolder text-gray-700 text-xxl-end">{{ $ventesMois ?? 0 }} </div>
+                                            <div class="fw-bolder text-gray-700 text-xxl-end">{{ $paiementMois ?? 0 }} </div>
                                             <!--end::Stats-->
                                         </div>
                                         <!--end::Label-->
